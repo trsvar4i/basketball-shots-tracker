@@ -100,16 +100,12 @@
       "undo-shot-button",
       "basketball-court",
       "court-lock",
-      "court-empty-hint",
-      "court-tooltip",
       "court-message",
       "shot-layer",
       "total-shots",
       "made-shots",
       "missed-shots",
       "field-goal-percent",
-      "current-streak",
-      "recent-shots",
       "zone-stats",
       "all-total-shots",
       "all-made-shots",
@@ -219,7 +215,6 @@
   }
 
   var toastTimer = null;
-  var undoTimer = null;
 
   function showToast(text, type) {
     window.clearTimeout(toastTimer);
@@ -412,7 +407,7 @@
     var list = elements["workout-list"];
 
     list.innerHTML = "";
-    elements["workout-count"].textContent = state.workouts.length || "—";
+    elements["workout-count"].textContent = state.workouts.length;
 
     if (!state.workouts.length) {
       list.innerHTML = '<p class="empty-state">Тренировок пока нет.</p>';
@@ -427,7 +422,6 @@
       var button = document.createElement("button");
       var title = document.createElement("strong");
       var meta = document.createElement("span");
-      var fg = document.createElement("b");
 
       button.type = "button";
       button.className = "workout-item";
@@ -440,16 +434,14 @@
       meta.textContent =
         formatDate(workout.workoutDate) + " · " +
         stats.total + " бросков · " +
+        stats.percent.toFixed(1) + "% · " +
         (workout.finishedAt ? "завершена" : "активна");
-
-      fg.className = "workout-fg";
-      fg.textContent = stats.total ? stats.percent.toFixed(0) + "%" : "—";
 
       if (workout.finishedAt) {
         meta.classList.add("finished");
       }
 
-      button.append(title, meta, fg);
+      button.append(title, meta);
 
       button.addEventListener("click", function () {
         state.activeWorkoutId = workout.id;
@@ -476,7 +468,6 @@
     var shots = getActiveShots();
 
     if (!workout) {
-      document.body.classList.remove("has-active-workout");
       elements["current-title"].textContent = "Выберите тренировку";
       elements["current-meta"].textContent =
         "Создайте тренировку или откройте её из истории.";
@@ -486,11 +477,6 @@
       elements["court-lock"].hidden = true;
       return;
     }
-
-    document.body.classList.toggle(
-      "has-active-workout",
-      !workout.finishedAt
-    );
 
     elements["current-title"].textContent = workout.title;
 
@@ -521,37 +507,12 @@
 
   function renderStatistics() {
     var stats = getWorkoutStats(state.activeWorkoutId);
-    var activeShots = getActiveShots();
-    var hasShots = stats.total > 0;
 
-    elements["total-shots"].textContent = hasShots ? stats.total : "—";
-    elements["made-shots"].textContent = hasShots ? stats.made : "—";
-    elements["missed-shots"].textContent = hasShots ? stats.missed : "—";
+    elements["total-shots"].textContent = stats.total;
+    elements["made-shots"].textContent = stats.made;
+    elements["missed-shots"].textContent = stats.missed;
     elements["field-goal-percent"].textContent =
-      hasShots ? stats.percent.toFixed(1) : "—";
-
-    var streak = 0;
-
-    for (var index = activeShots.length - 1; index >= 0; index -= 1) {
-      if (activeShots[index].result !== "made") {
-        break;
-      }
-
-      streak += 1;
-    }
-
-    elements["current-streak"].textContent =
-      "Серия: " + (hasShots ? streak : "—");
-
-    elements["recent-shots"].innerHTML = "";
-
-    activeShots.slice(-10).forEach(function (shot) {
-      var dot = document.createElement("i");
-
-      dot.className = "recent-dot " + shot.result;
-      dot.title = shot.result === "made" ? "Попадание" : "Промах";
-      elements["recent-shots"].appendChild(dot);
-    });
+      stats.percent.toFixed(1) + "%";
 
     var zoneContainer = elements["zone-stats"];
 
@@ -559,7 +520,7 @@
 
     if (!stats.total) {
       zoneContainer.innerHTML =
-        '<p class="empty-state">Зоны появятся после первого броска.</p>';
+        '<p class="empty-state">Сделайте первый бросок.</p>';
     } else {
       stats.zones.sort(function (a, b) {
         return b.attempts - a.attempts;
@@ -583,71 +544,18 @@
       return shot.result === "made";
     }).length;
 
-    elements["all-total-shots"].textContent = state.shots.length || "—";
-    elements["all-made-shots"].textContent = state.shots.length
-      ? allMade
-      : "—";
+    elements["all-total-shots"].textContent = state.shots.length;
+    elements["all-made-shots"].textContent = allMade;
     elements["all-field-goal-percent"].textContent =
-      state.shots.length
-        ? percentage(allMade, state.shots.length).toFixed(1) + "%"
-        : "—";
-
-    renderCourtHeatmap(stats);
+      percentage(allMade, state.shots.length).toFixed(1) + "%";
   }
 
-  function renderCourtHeatmap(stats) {
-    var zoneMap = {};
-
-    stats.zones.forEach(function (zone) {
-      zoneMap[zone.key] = zone;
-    });
-
-    document.querySelectorAll(".heat-zone").forEach(function (element) {
-      var zone = zoneMap[element.dataset.zone];
-      var intensity = zone ? .1 + zone.percent / 100 * .5 : .035;
-
-      element.style.fill = "rgba(233,120,46," + intensity + ")";
-      element.setAttribute(
-        "aria-label",
-        zone
-          ? zone.label + ": " + zone.made + " из " + zone.attempts +
-            ", " + zone.percent.toFixed(1) + "%"
-          : "В этой зоне пока нет бросков"
-      );
-    });
-
-    document.querySelectorAll("[data-zone-label]").forEach(function (group) {
-      var zone = zoneMap[group.dataset.zoneLabel];
-      var percent = group.querySelector(".zone-percent");
-      var detail = group.querySelector(".zone-detail");
-
-      percent.textContent = zone ? zone.percent.toFixed(0) + "%" : "—";
-
-      if (zone) {
-        detail.textContent = zone.label + " · " + zone.made + "/" +
-          zone.attempts;
-      } else {
-        var parts = group.dataset.zoneLabel.split("-");
-
-        detail.textContent = SIDE_LABELS[parts[0]] + " · " +
-          RANGE_LABELS[parts[1]];
-      }
-    });
-
-    elements["court-empty-hint"].hidden = stats.total > 0;
-  }
-
-  function createShotMarker(shot, isNewest) {
+  function createShotMarker(shot) {
     var group = document.createElementNS(SVG_NS, "g");
     var x = shot.x * 700;
     var y = shot.y * 760;
 
     group.setAttribute("pointer-events", "none");
-    group.setAttribute("data-shot-id", shot.id);
-    group.setAttribute(
-      "class",
-      "shot-marker" + (isNewest ? " is-new" : "")
-    );
 
     if (shot.result === "made") {
       var circle = document.createElementNS(SVG_NS, "circle");
@@ -655,9 +563,10 @@
       circle.setAttribute("cx", x);
       circle.setAttribute("cy", y);
       circle.setAttribute("r", "11");
-      circle.setAttribute("fill", "#b7d84b");
-      circle.setAttribute("stroke", "#26300c");
-      circle.setAttribute("stroke-width", "3");
+      circle.setAttribute("fill", "#65bca2");
+      circle.setAttribute("stroke", "#d5eee6");
+      circle.setAttribute("stroke-width", "4");
+      circle.setAttribute("filter", "url(#shot-glow)");
 
       group.appendChild(circle);
     } else {
@@ -671,26 +580,13 @@
         line.setAttribute("y1", points[1]);
         line.setAttribute("x2", points[2]);
         line.setAttribute("y2", points[3]);
-        line.setAttribute("stroke", "#f06455");
+        line.setAttribute("stroke", "#df7183");
         line.setAttribute("stroke-width", "7");
         line.setAttribute("stroke-linecap", "round");
+        line.setAttribute("filter", "url(#shot-glow)");
 
         group.appendChild(line);
       });
-    }
-
-    if (isNewest) {
-      var ring = document.createElementNS(SVG_NS, "circle");
-
-      ring.setAttribute("class", "shot-ring");
-      ring.setAttribute("cx", x);
-      ring.setAttribute("cy", y);
-      ring.setAttribute("r", "15");
-      ring.setAttribute(
-        "stroke",
-        shot.result === "made" ? "#b7d84b" : "#f06455"
-      );
-      group.insertBefore(ring, group.firstChild);
     }
 
     return group;
@@ -699,12 +595,8 @@
   function renderShots() {
     elements["shot-layer"].innerHTML = "";
 
-    var shots = getActiveShots();
-
-    shots.forEach(function (shot, index) {
-      elements["shot-layer"].appendChild(
-        createShotMarker(shot, index === shots.length - 1)
-      );
+    getActiveShots().forEach(function (shot) {
+      elements["shot-layer"].appendChild(createShotMarker(shot));
     });
   }
 
@@ -824,11 +716,11 @@
       line.setAttribute("x2", width - right);
       line.setAttribute("y1", y);
       line.setAttribute("y2", y);
-      line.setAttribute("stroke", "rgba(184,180,170,.18)");
+      line.setAttribute("stroke", "rgba(152,163,186,.14)");
 
       label.setAttribute("x", left - 12);
       label.setAttribute("y", y + 5);
-      label.setAttribute("fill", "#b8b4aa");
+      label.setAttribute("fill", "#98a3ba");
       label.setAttribute("text-anchor", "end");
       label.textContent = value + "%";
 
@@ -849,11 +741,11 @@
       " L" + points[0].x + " " + (top + graphHeight) + " Z"
     );
 
-    area.setAttribute("fill", "rgba(233,120,46,.08)");
+    area.setAttribute("fill", "rgba(122,110,230,.10)");
 
     linePath.setAttribute("d", path);
     linePath.setAttribute("fill", "none");
-    linePath.setAttribute("stroke", "#e9782e");
+    linePath.setAttribute("stroke", "#7a6ee6");
     linePath.setAttribute("stroke-width", "5");
     linePath.setAttribute("stroke-linecap", "round");
     linePath.setAttribute("stroke-linejoin", "round");
@@ -869,8 +761,8 @@
       circle.setAttribute("cx", point.x);
       circle.setAttribute("cy", point.y);
       circle.setAttribute("r", "8");
-      circle.setAttribute("fill", "#e9782e");
-      circle.setAttribute("stroke", "#fff3dc");
+      circle.setAttribute("fill", "#65bca2");
+      circle.setAttribute("stroke", "#d5eee6");
       circle.setAttribute("stroke-width", "3");
 
       title.textContent =
@@ -882,14 +774,14 @@
 
       value.setAttribute("x", point.x);
       value.setAttribute("y", point.y - 16);
-      value.setAttribute("fill", "#f4f1e9");
+      value.setAttribute("fill", "#edf0f7");
       value.setAttribute("font-weight", "700");
       value.setAttribute("text-anchor", "middle");
       value.textContent = point.value.toFixed(1) + "%";
 
       date.setAttribute("x", point.x);
       date.setAttribute("y", height - 25);
-      date.setAttribute("fill", "#b8b4aa");
+      date.setAttribute("fill", "#98a3ba");
       date.setAttribute("font-size", "13");
       date.setAttribute("text-anchor", "middle");
       date.textContent = formatDate(point.workout.workoutDate);
@@ -903,7 +795,7 @@
 
       elements["chart-trend"].textContent =
         (difference >= 0 ? "Рост +" : "Снижение ") +
-        difference.toFixed(1) + " п.п.";
+        difference.toFixed(1) + "%";
     } else {
       elements["chart-trend"].textContent =
         "Первая точка: " + points[0].value.toFixed(1) + "%";
@@ -1058,36 +950,25 @@
     var workout = getActiveWorkout();
     var shots = getActiveShots();
 
-    if (!workout || workout.finishedAt || !shots.length || undoTimer) {
+    if (!workout || workout.finishedAt || !shots.length) {
       return;
     }
 
     var lastShot = shots[shots.length - 1];
-    var marker = elements["shot-layer"].querySelector(
-      '[data-shot-id="' + lastShot.id + '"]'
-    );
 
-    if (marker) {
-      marker.classList.remove("is-new");
-      marker.classList.add("is-removing");
+    state.shots = state.shots.filter(function (shot) {
+      return shot.id !== lastShot.id;
+    });
+
+    var drill = getActiveDrill();
+
+    if (drill && getDrillShots(drill.id).length <
+      drill.sets * drill.shotsPerSet) {
+      drill.finishedAt = null;
     }
 
-    undoTimer = window.setTimeout(function () {
-      state.shots = state.shots.filter(function (shot) {
-        return shot.id !== lastShot.id;
-      });
-
-      var drill = getActiveDrill();
-
-      if (drill && getDrillShots(drill.id).length <
-        drill.sets * drill.shotsPerSet) {
-        drill.finishedAt = null;
-      }
-
-      undoTimer = null;
-      saveData();
-      renderAll();
-    }, 180);
+    saveData();
+    renderAll();
   }
 
   function openConfirmation(action) {
@@ -1371,10 +1252,6 @@
     var firstStats = getWorkoutStats(firstId);
     var secondStats = getWorkoutStats(secondId);
     var difference = secondStats.percent - firstStats.percent;
-    var differenceClass = Math.abs(difference) < 2
-      ? ""
-      : difference > 0 ? "positive" : "negative";
-    var differenceMark = difference > 0 ? "▲ " : difference < 0 ? "▼ " : "";
 
     var result = elements["comparison-result"];
 
@@ -1388,9 +1265,8 @@
         "<thead><tr><th>Показатель</th><th>Изменение</th></tr></thead>" +
         "<tbody>" +
           "<tr><td>Точность</td><td class=\"" +
-          differenceClass + "\">" + differenceMark +
-          (difference > 0 ? "+" : "") + difference.toFixed(1) +
-          " п.п.</td></tr>" +
+          (difference >= 0 ? "positive" : "negative") + "\">" +
+          (difference >= 0 ? "+" : "") + difference.toFixed(1) + "%</td></tr>" +
           "<tr><td>Количество бросков</td><td>" +
           (secondStats.total - firstStats.total) + "</td></tr>" +
           "<tr><td>Попадания</td><td>" +
@@ -1427,45 +1303,6 @@
     return element.innerHTML;
   }
 
-  function selectShotResult(result) {
-    state.selectedResult = result;
-
-    elements.resultButtons.forEach(function (button) {
-      button.classList.toggle("active", button.dataset.result === result);
-    });
-  }
-
-  function handleCourtPointerMove(event) {
-    var zoneElement = event.target.closest(".heat-zone");
-
-    if (!zoneElement) {
-      elements["court-tooltip"].hidden = true;
-      return;
-    }
-
-    var zone = getWorkoutStats(state.activeWorkoutId).zones.find(
-      function (item) {
-        return item.key === zoneElement.dataset.zone;
-      }
-    );
-    var label = zone
-      ? zone.label + " · " + zone.made + "/" + zone.attempts +
-        " · " + zone.percent.toFixed(1) + "%"
-      : zoneElement.getAttribute("aria-label");
-    var wrapper = elements["basketball-court"].parentElement;
-    var bounds = wrapper.getBoundingClientRect();
-
-    elements["court-tooltip"].textContent = label;
-    elements["court-tooltip"].style.left =
-      Math.max(
-        8,
-        Math.min(event.clientX - bounds.left + 12, bounds.width - 220)
-      ) + "px";
-    elements["court-tooltip"].style.top =
-      Math.max(8, event.clientY - bounds.top + 12) + "px";
-    elements["court-tooltip"].hidden = false;
-  }
-
   function connectEvents() {
     elements["workout-form"].addEventListener("submit", handleCreateWorkout);
     elements.modeInputs.forEach(function (input) {
@@ -1477,13 +1314,6 @@
       updateProgramPreview(true);
     });
     elements["basketball-court"].addEventListener("click", handleCourtClick);
-    elements["basketball-court"].addEventListener(
-      "pointermove",
-      handleCourtPointerMove
-    );
-    elements["basketball-court"].addEventListener("pointerleave", function () {
-      elements["court-tooltip"].hidden = true;
-    });
     elements["undo-shot-button"].addEventListener("click", undoShot);
 
     elements["finish-workout-button"].addEventListener("click", function () {
@@ -1533,29 +1363,12 @@
 
     elements.resultButtons.forEach(function (button) {
       button.addEventListener("click", function () {
-        selectShotResult(button.dataset.result);
+        state.selectedResult = button.dataset.result;
+
+        elements.resultButtons.forEach(function (current) {
+          current.classList.toggle("active", current === button);
+        });
       });
-    });
-
-    document.addEventListener("keydown", function (event) {
-      var tagName = event.target.tagName;
-
-      if (tagName === "INPUT" || tagName === "TEXTAREA" ||
-        tagName === "SELECT" || document.querySelector("dialog[open]")) {
-        return;
-      }
-
-      if (event.code === "KeyH") {
-        selectShotResult("made");
-      } else if (event.code === "KeyM") {
-        selectShotResult("missed");
-      } else if (event.code === "KeyZ") {
-        undoShot();
-      } else {
-        return;
-      }
-
-      event.preventDefault();
     });
   }
 

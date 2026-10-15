@@ -13,11 +13,11 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
-    href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&family=Oswald:wght@500;600;700&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;600;700&display=swap"
     rel="stylesheet"
   >
-  <link rel="stylesheet" href="./styles.css?v=14">
-  <script src="./app.js?v=14" defer></script>
+  <link rel="stylesheet" href="./styles.css?v=13">
+  <script src="./app.js?v=11" defer></script>
 </head>
 
 <body>
@@ -33,7 +33,7 @@
           </svg>
         </div>
         <div>
-          <p class="eyebrow">Рабочая станция тренера</p>
+          <p class="eyebrow">Анализ тренировок</p>
           <h1>Basketball Shot Chart</h1>
         </div>
       </div>
@@ -82,6 +82,7 @@
 
             <label class="mode-card active">
               <input type="radio" name="workout-mode" value="free" checked>
+              <span class="mode-icon" aria-hidden="true">◎</span>
               <span>
                 <strong>Свободная</strong>
                 <small>Отмечайте любые броски без ограничений</small>
@@ -91,6 +92,7 @@
 
             <label class="mode-card">
               <input type="radio" name="workout-mode" value="guided">
+              <span class="mode-icon" aria-hidden="true">✦</span>
               <span>
                 <strong>Готовая программа</strong>
                 <small>Упражнение, серии и цель уже настроены</small>
@@ -140,6 +142,7 @@
           ></textarea>
 
           <button class="primary-button create-workout-button" type="submit">
+            <span aria-hidden="true">＋</span>
             <span id="create-button-text">Начать свободную тренировку</span>
           </button>
         </form>
@@ -230,8 +233,7 @@
                 data-result="made"
                 type="button"
               >
-                <span>Попадание</span>
-                <kbd>H</kbd>
+                Попадание
               </button>
 
               <button
@@ -239,8 +241,7 @@
                 data-result="missed"
                 type="button"
               >
-                <span>Промах</span>
-                <kbd>M</kbd>
+                Промах
               </button>
             </div>
           </div>
@@ -254,26 +255,32 @@
               aria-label="Половина баскетбольной площадки"
             >
               <defs>
-                <pattern id="court-parquet" width="140" height="760" patternUnits="userSpaceOnUse">
-                  <rect width="70" height="760" fill="#B87942"></rect>
-                  <rect x="70" width="70" height="760" fill="#B4763F"></rect>
-                  <path d="M70 0V760M140 0V760" stroke="#8E592F" stroke-opacity=".28"></path>
-                  <path d="M0 190H140M0 380H140M0 570H140" stroke="#D39A62" stroke-opacity=".12"></path>
-                </pattern>
+                <linearGradient id="court-background" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#1b2947"></stop>
+                  <stop offset="100%" stop-color="#10182b"></stop>
+                </linearGradient>
+
+                <radialGradient id="court-glow">
+                  <stop offset="0%" stop-color="#7468d8" stop-opacity=".26"></stop>
+                  <stop offset="100%" stop-color="#7468d8" stop-opacity="0"></stop>
+                </radialGradient>
+
+                <filter id="shot-glow">
+                  <feGaussianBlur stdDeviation="4" result="blur"></feGaussianBlur>
+                  <feMerge>
+                    <feMergeNode in="blur"></feMergeNode>
+                    <feMergeNode in="SourceGraphic"></feMergeNode>
+                  </feMerge>
+                </filter>
               </defs>
 
-              <rect class="court-floor" width="700" height="760" rx="4"></rect>
+              <rect class="court-floor" width="700" height="760" rx="12"></rect>
+              <circle cx="350" cy="95" r="340" fill="url(#court-glow)"></circle>
 
-              <g id="zone-heat-layer" class="zone-heat-layer">
-                <rect class="heat-zone" data-zone="left-close" x="20" y="20" width="239" height="210"></rect>
-                <rect class="heat-zone" data-zone="center-close" x="259" y="20" width="182" height="210"></rect>
-                <rect class="heat-zone" data-zone="right-close" x="441" y="20" width="239" height="210"></rect>
-                <rect class="heat-zone" data-zone="left-mid" x="20" y="230" width="239" height="240"></rect>
-                <rect class="heat-zone" data-zone="center-mid" x="259" y="230" width="182" height="240"></rect>
-                <rect class="heat-zone" data-zone="right-mid" x="441" y="230" width="239" height="240"></rect>
-                <rect class="heat-zone" data-zone="left-three" x="20" y="470" width="239" height="270"></rect>
-                <rect class="heat-zone" data-zone="center-three" x="259" y="470" width="182" height="270"></rect>
-                <rect class="heat-zone" data-zone="right-three" x="441" y="470" width="239" height="270"></rect>
+              <g class="floor-lines">
+                <path d="M0 55H700M0 110H700M0 165H700M0 220H700"></path>
+                <path d="M0 275H700M0 330H700M0 385H700M0 440H700"></path>
+                <path d="M0 495H700M0 550H700M0 605H700M0 660H700M0 715H700"></path>
               </g>
 
               <rect class="court-boundary" x="20" y="20" width="660" height="720"></rect>
@@ -287,16 +294,14 @@
               <path class="court-marking" d="M86 245 A295 295 0 0 0 614 245"></path>
               <path class="court-marking" d="M235 740 A115 115 0 0 1 465 740"></path>
 
-              <g id="zone-label-layer" class="zone-label-layer" aria-hidden="true">
-                <g data-zone-label="left-close" transform="translate(135 170)"><text class="zone-percent">—</text><text class="zone-detail" y="24">слева · кольцо</text></g>
-                <g data-zone-label="center-close" transform="translate(350 170)"><text class="zone-percent">—</text><text class="zone-detail" y="24">центр · кольцо</text></g>
-                <g data-zone-label="right-close" transform="translate(565 170)"><text class="zone-percent">—</text><text class="zone-detail" y="24">справа · кольцо</text></g>
-                <g data-zone-label="left-mid" transform="translate(135 390)"><text class="zone-percent">—</text><text class="zone-detail" y="24">слева · средняя</text></g>
-                <g data-zone-label="center-mid" transform="translate(350 390)"><text class="zone-percent">—</text><text class="zone-detail" y="24">центр · средняя</text></g>
-                <g data-zone-label="right-mid" transform="translate(565 390)"><text class="zone-percent">—</text><text class="zone-detail" y="24">справа · средняя</text></g>
-                <g data-zone-label="left-three" transform="translate(135 675)"><text class="zone-percent">—</text><text class="zone-detail" y="24">слева · три</text></g>
-                <g data-zone-label="center-three" transform="translate(350 675)"><text class="zone-percent">—</text><text class="zone-detail" y="24">центр · три</text></g>
-                <g data-zone-label="right-three" transform="translate(565 675)"><text class="zone-percent">—</text><text class="zone-detail" y="24">справа · три</text></g>
+              <g class="zone-guides">
+                <path d="M259 20V740M441 20V740"></path>
+              </g>
+
+              <g class="zone-labels">
+                <text x="130" y="710">ЛЕВАЯ</text>
+                <text x="350" y="710">ЦЕНТР</text>
+                <text x="570" y="710">ПРАВАЯ</text>
               </g>
 
               <g id="shot-layer"></g>
@@ -306,12 +311,6 @@
               <strong>Тренировка завершена</strong>
               <span>Новые броски добавить нельзя</span>
             </div>
-
-            <div id="court-empty-hint" class="court-empty-hint">
-              Нажмите на площадку, чтобы зафиксировать первый бросок
-            </div>
-
-            <div id="court-tooltip" class="court-tooltip" role="tooltip" hidden></div>
           </div>
 
           <div class="court-footer">
@@ -326,8 +325,7 @@
               type="button"
               disabled
             >
-              <span>Отменить бросок</span>
-              <kbd>Z</kbd>
+              Отменить последний бросок
             </button>
           </div>
 
@@ -336,32 +334,27 @@
 
         <aside class="statistics-column">
           <section class="panel stats-panel">
-            <div class="scoreboard-heading">
-              <h2>Точность</h2>
-              <span id="current-streak" class="streak-label">Серия: —</span>
-            </div>
-
-            <div class="primary-stat">
-              <strong id="field-goal-percent">—</strong>
-              <span>FG%</span>
-            </div>
-
-            <div id="recent-shots" class="recent-shots" aria-label="Последние десять бросков"></div>
+            <h2>Статистика тренировки</h2>
 
             <div class="stats-grid">
               <article class="stat-card">
                 <span>Броски</span>
-                <strong id="total-shots">—</strong>
+                <strong id="total-shots">0</strong>
               </article>
 
               <article class="stat-card">
                 <span>Попадания</span>
-                <strong id="made-shots">—</strong>
+                <strong id="made-shots">0</strong>
               </article>
 
               <article class="stat-card">
                 <span>Промахи</span>
-                <strong id="missed-shots">—</strong>
+                <strong id="missed-shots">0</strong>
+              </article>
+
+              <article class="stat-card accent">
+                <span>FG%</span>
+                <strong id="field-goal-percent">0.0%</strong>
               </article>
             </div>
           </section>
@@ -376,17 +369,17 @@
 
             <div class="overall-row">
               <span>Всего бросков</span>
-              <strong id="all-total-shots">—</strong>
+              <strong id="all-total-shots">0</strong>
             </div>
 
             <div class="overall-row">
               <span>Всего попаданий</span>
-              <strong id="all-made-shots">—</strong>
+              <strong id="all-made-shots">0</strong>
             </div>
 
             <div class="overall-row">
               <span>Общий FG%</span>
-              <strong id="all-field-goal-percent">—</strong>
+              <strong id="all-field-goal-percent">0.0%</strong>
             </div>
           </section>
         </aside>
