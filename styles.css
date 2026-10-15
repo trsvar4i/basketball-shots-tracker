@@ -1,0 +1,1440 @@
+:root {
+  --background: #050816;
+  --panel: #0d142c;
+  --panel-light: #131d3d;
+  --panel-hover: #182449;
+  --border: #293762;
+  --border-bright: #465b98;
+  --text: #f6f7ff;
+  --muted: #9ca9cf;
+  --purple: #8b5cf6;
+  --purple-light: #b7a0ff;
+  --purple-dark: #5b21b6;
+  --blue: #3b82f6;
+  --cyan: #38bdf8;
+  --red: #fb7185;
+  --shadow: 0 20px 55px rgba(0, 0, 0, 0.32);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  min-width: 320px;
+  min-height: 100vh;
+  margin: 0;
+  color: var(--text);
+  font-family:
+    Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+  background:
+    radial-gradient(
+      circle at 10% 0%,
+      rgba(91, 33, 182, 0.26),
+      transparent 34%
+    ),
+    radial-gradient(
+      circle at 90% 12%,
+      rgba(37, 99, 235, 0.18),
+      transparent 30%
+    ),
+    var(--background);
+}
+
+body:has(dialog[open]) {
+  overflow: hidden;
+}
+
+button,
+input,
+textarea {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.43;
+}
+
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+svg:focus-visible {
+  outline: 3px solid rgba(167, 139, 250, 0.55);
+  outline-offset: 3px;
+}
+
+.site-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 26px 34px;
+  border-bottom: 1px solid var(--border);
+  background: rgba(5, 8, 22, 0.78);
+  backdrop-filter: blur(18px);
+}
+
+.site-header h1 {
+  margin: 4px 0 0;
+  font-size: clamp(1.7rem, 3vw, 2.4rem);
+}
+
+.eyebrow {
+  margin: 0;
+  color: var(--purple-light);
+  font-size: 0.74rem;
+  font-weight: 850;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+}
+
+.storage-status {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  color: var(--muted);
+  font-size: 0.87rem;
+}
+
+.status-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--cyan);
+  box-shadow: 0 0 13px var(--cyan);
+}
+
+.app-layout {
+  display: grid;
+  grid-template-columns: minmax(270px, 330px) minmax(0, 1fr);
+  gap: 22px;
+  width: min(1500px, 100%);
+  margin: 0 auto;
+  padding: 24px;
+}
+
+.sidebar,
+.workspace,
+.statistics-column {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.panel {
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  background:
+    linear-gradient(
+      145deg,
+      rgba(19, 29, 61, 0.78),
+      transparent
+    ),
+    var(--panel);
+  box-shadow: var(--shadow);
+}
+
+.form-panel,
+.history-panel,
+.current-workout-panel,
+.stats-panel {
+  padding: 20px;
+}
+
+.panel h2 {
+  margin: 0;
+  font-size: 1.08rem;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  margin-top: 18px;
+}
+
+label {
+  margin-bottom: 7px;
+  color: var(--muted);
+  font-size: 0.84rem;
+  font-weight: 750;
+}
+
+input,
+textarea {
+  width: 100%;
+  margin-bottom: 15px;
+  padding: 11px 12px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: #070b1c;
+  color: var(--text);
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: #66739a;
+}
+
+textarea {
+  resize: vertical;
+}
+
+.primary-button,
+.finish-button,
+.danger-button,
+.secondary-button,
+.result-button {
+  min-height: 42px;
+  padding: 10px 14px;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  color: var(--text);
+  font-weight: 800;
+  transition:
+    background 150ms ease,
+    border-color 150ms ease,
+    transform 150ms ease;
+}
+
+.primary-button,
+.finish-button {
+  background: linear-gradient(135deg, var(--purple), var(--blue));
+}
+
+.primary-button:hover,
+.finish-button:not(:disabled):hover {
+  transform: translateY(-1px);
+  background: linear-gradient(135deg, #a78bfa, #5794ff);
+}
+
+.secondary-button {
+  border-color: var(--border);
+  background: var(--panel-light);
+}
+
+.secondary-button:not(:disabled):hover {
+  border-color: var(--border-bright);
+  background: var(--panel-hover);
+}
+
+.danger-button {
+  border-color: rgba(251, 113, 133, 0.45);
+  background: rgba(251, 113, 133, 0.08);
+  color: #fda4af;
+}
+
+.danger-button:not(:disabled):hover {
+  background: rgba(251, 113, 133, 0.16);
+}
+
+.message {
+  min-height: 20px;
+  margin: 12px 0 0;
+  color: var(--muted);
+  font-size: 0.86rem;
+}
+
+.message.success {
+  color: var(--cyan);
+}
+
+.message.error {
+  color: var(--red);
+}
+
+.muted,
+.empty-state {
+  color: var(--muted);
+}
+
+.empty-state {
+  line-height: 1.55;
+}
+
+.section-heading,
+.current-workout-panel,
+.court-header,
+.court-footer,
+.analysis-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.counter {
+  min-width: 29px;
+  padding: 4px 9px;
+  border-radius: 999px;
+  background: var(--panel-light);
+  color: var(--muted);
+  text-align: center;
+}
+
+.workout-list {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  margin-top: 15px;
+}
+
+.workout-item {
+  width: 100%;
+  padding: 13px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: rgba(5, 8, 22, 0.58);
+  color: var(--text);
+  text-align: left;
+}
+
+.workout-item:hover,
+.workout-item.active {
+  border-color: var(--purple-light);
+  background: rgba(139, 92, 246, 0.14);
+}
+
+.workout-item strong,
+.workout-item span {
+  display: block;
+}
+
+.workout-item span {
+  margin-top: 5px;
+  color: var(--muted);
+  font-size: 0.79rem;
+  line-height: 1.4;
+}
+
+.workout-item span.finished {
+  color: var(--cyan);
+}
+
+.current-workout-panel h2 {
+  margin-top: 6px;
+  font-size: 1.35rem;
+}
+
+.current-workout-panel .muted {
+  margin: 7px 0 0;
+}
+
+.workout-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.content-grid {
+  display: grid;
+  grid-template-columns: minmax(440px, 1fr) minmax(270px, 340px);
+  gap: 20px;
+}
+
+.court-panel {
+  padding: 20px;
+}
+
+.court-header {
+  align-items: flex-start;
+  margin-bottom: 18px;
+}
+
+.court-header .muted {
+  margin: 7px 0 0;
+}
+
+.shot-selector {
+  display: flex;
+  gap: 8px;
+}
+
+.result-button {
+  border-color: var(--border);
+  background: transparent;
+}
+
+.result-button.made.active {
+  border-color: var(--cyan);
+  background: rgba(56, 189, 248, 0.16);
+  color: #7dd3fc;
+}
+
+.result-button.missed.active {
+  border-color: var(--red);
+  background: rgba(251, 113, 133, 0.15);
+  color: #fda4af;
+}
+
+.court-wrapper {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  overflow: hidden;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: #030612;
+}
+
+.basketball-court {
+  display: block;
+  width: 100%;
+  max-width: 700px;
+  height: auto;
+  border-radius: 12px;
+  cursor: crosshair;
+  touch-action: none;
+  user-select: none;
+}
+
+.court-floor {
+  fill: url("#court-background");
+}
+
+.floor-lines {
+  stroke: rgba(255, 255, 255, 0.035);
+  stroke-width: 2;
+}
+
+.court-boundary,
+.court-marking {
+  fill: none;
+  stroke: rgba(235, 238, 255, 0.93);
+  stroke-width: 5;
+}
+
+.paint-fill {
+  fill: rgba(91, 33, 182, 0.43);
+}
+
+.dashed-marking {
+  fill: none;
+  stroke: rgba(235, 238, 255, 0.62);
+  stroke-width: 4;
+  stroke-dasharray: 11 11;
+}
+
+.backboard {
+  stroke-width: 8;
+}
+
+.basket {
+  fill: none;
+  stroke: #c4b5fd;
+  stroke-width: 7;
+}
+
+.zone-guides {
+  stroke: rgba(167, 139, 250, 0.24);
+  stroke-width: 2;
+  stroke-dasharray: 8 13;
+}
+
+.zone-labels {
+  fill: rgba(220, 225, 255, 0.4);
+  font-size: 16px;
+  font-weight: 800;
+  text-anchor: middle;
+  pointer-events: none;
+}
+
+.court-lock {
+  position: absolute;
+  inset: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  background: rgba(5, 8, 22, 0.74);
+  color: var(--purple-light);
+  backdrop-filter: blur(3px);
+}
+
+.court-lock[hidden] {
+  display: none;
+}
+
+.court-lock strong {
+  font-size: 1.1rem;
+}
+
+.court-lock span {
+  margin-top: 6px;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.court-footer {
+  margin-top: 15px;
+}
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  color: var(--muted);
+  font-size: 0.84rem;
+}
+
+.legend span {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.made-dot {
+  background: var(--cyan);
+  box-shadow: 0 0 9px var(--cyan);
+}
+
+.missed-dot {
+  background: var(--red);
+  box-shadow: 0 0 9px var(--red);
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.stat-card {
+  padding: 14px;
+  border: 1px solid rgba(41, 55, 98, 0.65);
+  border-radius: 12px;
+  background: rgba(5, 8, 22, 0.6);
+}
+
+.stat-card span,
+.stat-card strong {
+  display: block;
+}
+
+.stat-card span {
+  color: var(--muted);
+  font-size: 0.74rem;
+}
+
+.stat-card strong {
+  margin-top: 5px;
+  font-size: 1.45rem;
+}
+
+.stat-card.accent {
+  border-color: rgba(139, 92, 246, 0.5);
+  background: rgba(91, 33, 182, 0.2);
+}
+
+.stat-card.accent strong {
+  color: var(--purple-light);
+}
+
+.zone-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-top: 17px;
+}
+
+.zone-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 7px 12px;
+}
+
+.zone-row span {
+  color: #dce2ff;
+  font-size: 0.82rem;
+}
+
+.zone-row strong {
+  color: var(--purple-light);
+  font-size: 0.84rem;
+}
+
+.progress-track {
+  grid-column: 1 / -1;
+  height: 7px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: #050816;
+}
+
+.progress-fill {
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--purple), var(--cyan));
+}
+
+.overall-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 13px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.overall-row:last-child {
+  border-bottom: 0;
+}
+
+.overall-row span {
+  color: var(--muted);
+  font-size: 0.86rem;
+}
+
+.overall-row strong {
+  color: var(--purple-light);
+}
+
+/* Модальные окна */
+
+.app-dialog {
+  width: min(560px, calc(100% - 28px));
+  max-height: calc(100vh - 28px);
+  margin: auto;
+  padding: 0;
+  overflow: auto;
+  border: 1px solid rgba(139, 92, 246, 0.7);
+  border-radius: 20px;
+  background:
+    radial-gradient(
+      circle at 100% 0%,
+      rgba(59, 130, 246, 0.18),
+      transparent 38%
+    ),
+    radial-gradient(
+      circle at 0% 100%,
+      rgba(139, 92, 246, 0.2),
+      transparent 42%
+    ),
+    #0d142c;
+  color: var(--text);
+  box-shadow:
+    0 35px 100px rgba(0, 0, 0, 0.8),
+    0 0 0 1px rgba(167, 139, 250, 0.13);
+}
+
+.app-dialog::backdrop {
+  background: rgba(1, 3, 12, 0.84);
+  backdrop-filter: blur(6px);
+}
+
+.app-dialog[open] {
+  animation: dialog-appear 180ms ease-out;
+}
+
+.dialog-content {
+  position: relative;
+  padding: 28px;
+}
+
+.confirmation-content {
+  text-align: center;
+}
+
+.dialog-icon {
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  margin: 0 auto 18px;
+  border: 1px solid rgba(167, 139, 250, 0.65);
+  border-radius: 50%;
+  background: rgba(139, 92, 246, 0.18);
+  color: var(--purple-light);
+  font-size: 1.5rem;
+  font-weight: 900;
+}
+
+.confirmation-content h2 {
+  margin: 0;
+  font-size: 1.42rem;
+}
+
+.confirmation-content > p {
+  max-width: 440px;
+  margin: 13px auto 23px;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.dialog-actions {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+.analysis-dialog {
+  width: min(1000px, calc(100% - 28px));
+}
+
+.analysis-content {
+  padding: 30px;
+}
+
+.dialog-close {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  background: rgba(5, 8, 22, 0.72);
+  color: var(--muted);
+  font-size: 1.6rem;
+  line-height: 1;
+}
+
+.dialog-close:hover {
+  border-color: var(--purple-light);
+  color: var(--text);
+}
+
+.analysis-heading {
+  padding-right: 46px;
+}
+
+.analysis-heading h2 {
+  margin-top: 6px;
+  font-size: 1.5rem;
+}
+
+.analysis-grade {
+  padding: 8px 13px;
+  border: 1px solid rgba(167, 139, 250, 0.55);
+  border-radius: 999px;
+  background: rgba(139, 92, 246, 0.16);
+  color: #ddd6fe;
+  font-size: 0.84rem;
+  font-weight: 800;
+}
+
+.analysis-summary {
+  margin: 20px 0;
+  color: #c5ceef;
+  line-height: 1.65;
+}
+
+.analysis-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.analysis-card {
+  padding: 18px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: rgba(5, 8, 22, 0.6);
+}
+
+.strong-card {
+  border-color: rgba(56, 189, 248, 0.4);
+}
+
+.weak-card {
+  border-color: rgba(251, 113, 133, 0.42);
+}
+
+.analysis-label {
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 850;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.analysis-card h3 {
+  margin: 8px 0;
+}
+
+.analysis-card p,
+.recommendations li {
+  color: #aeb9dd;
+  line-height: 1.55;
+}
+
+.recommendations {
+  margin-top: 22px;
+}
+
+.recommendations ol {
+  display: grid;
+  gap: 8px;
+  padding-left: 24px;
+}
+
+.analysis-notice {
+  margin: 20px 0 0;
+  color: #7480a6;
+  font-size: 0.78rem;
+}
+
+.dialog-footer {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 24px;
+}
+
+@keyframes dialog-appear {
+  from {
+    opacity: 0;
+    transform: translateY(18px) scale(0.97);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@media (max-width: 1120px) {
+  .app-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .sidebar {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+  }
+}
+
+@media (max-width: 850px) {
+  .content-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 680px) {
+  .site-header,
+  .current-workout-panel,
+  .court-header,
+  .court-footer,
+  .analysis-heading {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .app-layout {
+    padding: 14px;
+  }
+
+  .sidebar {
+    display: flex;
+  }
+
+  .shot-selector,
+  .workout-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .analysis-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .dialog-content,
+  .analysis-content {
+    padding: 22px;
+  }
+
+  .dialog-actions {
+    flex-direction: column-reverse;
+  }
+
+  .dialog-actions button,
+  .dialog-footer button {
+    width: 100%;
+  }
+}
+/* =========================================
+   ЕДИНАЯ ШИРИНА БЛОКОВ НА МОБИЛЬНЫХ
+   И ПЛАНШЕТАХ
+   ========================================= */
+
+html,
+body {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+.app-layout,
+.sidebar,
+.workspace,
+.content-grid,
+.statistics-column {
+  min-width: 0;
+}
+
+.sidebar,
+.workspace,
+.statistics-column {
+  align-items: stretch;
+}
+
+.sidebar > .panel,
+.workspace > .panel,
+.statistics-column > .panel,
+.content-grid > .panel {
+  width: 100%;
+  min-width: 0;
+  max-width: none;
+}
+
+.basketball-court,
+img,
+svg,
+canvas {
+  max-width: 100%;
+}
+
+/* =========================================
+   НЕБОЛЬШОЙ НОУТБУК / БОЛЬШОЙ ПЛАНШЕТ
+   ========================================= */
+
+@media (max-width: 1180px) {
+  .app-layout {
+    grid-template-columns:
+      minmax(250px, 310px)
+      minmax(0, 1fr);
+    gap: 18px;
+    width: 100%;
+    padding: 20px;
+  }
+
+  .sidebar {
+    width: 100%;
+    align-items: stretch;
+  }
+
+  .content-grid {
+    grid-template-columns: minmax(0, 1fr);
+    width: 100%;
+  }
+
+  .court-panel {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .statistics-column {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    align-items: stretch;
+    width: 100%;
+  }
+
+  .statistics-column > .stats-panel {
+    width: 100%;
+    height: 100%;
+  }
+
+  .basketball-court {
+    width: min(100%, 680px);
+  }
+}
+
+/* =========================================
+   ПЛАНШЕТ — ВЕРТИКАЛЬНАЯ ОРИЕНТАЦИЯ
+   ========================================= */
+
+@media (max-width: 900px) {
+  .site-header {
+    padding: 22px;
+  }
+
+  .app-layout {
+    display: flex;
+    flex-direction: column;
+    width: min(100%, 860px);
+    margin-inline: auto;
+    padding: 18px;
+  }
+
+  .sidebar {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: stretch;
+    width: 100%;
+  }
+
+  .sidebar > .panel {
+    width: 100%;
+    height: 100%;
+  }
+
+  .workspace {
+    width: 100%;
+    align-items: stretch;
+  }
+
+  .current-workout-panel {
+    width: 100%;
+  }
+
+  .content-grid {
+    display: block;
+    width: 100%;
+  }
+
+  .court-panel {
+    width: 100%;
+  }
+
+  .statistics-column {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: stretch;
+    width: 100%;
+    margin-top: 18px;
+  }
+
+  .statistics-column > .stats-panel {
+    width: 100%;
+    max-width: none;
+    height: 100%;
+  }
+
+  .statistics-column > .stats-panel:last-child {
+    grid-column: 1 / -1;
+  }
+
+  .court-wrapper {
+    width: 100%;
+    padding: 10px;
+  }
+
+  .basketball-court {
+    width: min(100%, 650px);
+  }
+
+  .analysis-dialog {
+    width: min(760px, calc(100% - 32px));
+  }
+}
+
+/* =========================================
+   ТЕЛЕФОН — ВЕРТИКАЛЬНАЯ ОРИЕНТАЦИЯ
+   ========================================= */
+
+@media (max-width: 680px) {
+  body {
+    font-size: 15px;
+  }
+
+  .site-header {
+    align-items: flex-start;
+    flex-direction: column;
+    width: 100%;
+    gap: 13px;
+    padding: 18px 16px;
+  }
+
+  .site-header h1 {
+    font-size: 1.65rem;
+    line-height: 1.1;
+  }
+
+  .storage-status {
+    font-size: 0.78rem;
+  }
+
+  .app-layout {
+    display: flex;
+    flex-direction: column;
+    width: min(100%, 520px);
+    margin-inline: auto;
+    gap: 14px;
+    padding: 14px;
+  }
+
+  .sidebar,
+  .workspace,
+  .content-grid,
+  .statistics-column {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+    min-width: 0;
+    gap: 14px;
+  }
+
+  .sidebar > .panel,
+  .workspace > .panel,
+  .statistics-column > .panel,
+  .content-grid > .panel {
+    width: 100%;
+    min-width: 0;
+    max-width: none;
+    margin: 0;
+  }
+
+  .panel {
+    border-radius: 15px;
+  }
+
+  .form-panel,
+  .history-panel,
+  .current-workout-panel,
+  .stats-panel,
+  .court-panel {
+    width: 100%;
+    padding: 16px;
+  }
+
+  .current-workout-panel {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .current-workout-panel h2 {
+    overflow-wrap: anywhere;
+    font-size: 1.2rem;
+  }
+
+  .workout-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    width: 100%;
+  }
+
+  .workout-actions button {
+    width: 100%;
+  }
+
+  .court-header {
+    align-items: stretch;
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .shot-selector {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    width: 100%;
+  }
+
+  .shot-selector button {
+    width: 100%;
+  }
+
+  .court-wrapper {
+    width: 100%;
+    padding: 7px;
+    border-radius: 13px;
+  }
+
+  .basketball-court {
+    width: 100%;
+    min-width: 0;
+    height: auto;
+    border-radius: 9px;
+  }
+
+  .court-footer {
+    align-items: stretch;
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .court-footer .secondary-button {
+    width: 100%;
+  }
+
+  .legend {
+    justify-content: center;
+  }
+
+  .statistics-column {
+    margin-top: 0;
+  }
+
+  .statistics-column > .stats-panel:last-child {
+    grid-column: auto;
+  }
+
+  .stats-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    width: 100%;
+  }
+
+  .stat-card {
+    width: 100%;
+    min-width: 0;
+    padding: 13px;
+  }
+
+  .stat-card strong {
+    font-size: 1.3rem;
+  }
+
+  .zone-stats {
+    width: 100%;
+  }
+
+  .zone-row {
+    grid-template-columns: minmax(0, 1fr) auto;
+    width: 100%;
+  }
+
+  .zone-row span {
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+
+  .progress-track {
+    width: 100%;
+  }
+
+  .overall-row {
+    width: 100%;
+  }
+
+  .workout-list,
+  .workout-item {
+    width: 100%;
+  }
+
+  input,
+  textarea,
+  button {
+    font-size: 16px;
+  }
+
+  input,
+  textarea {
+    min-height: 46px;
+  }
+
+  button {
+    min-height: 46px;
+  }
+
+  .app-dialog,
+  .analysis-dialog {
+    width: calc(100% - 20px);
+    max-height: calc(100dvh - 20px);
+    margin: auto;
+    border-radius: 16px;
+  }
+
+  .dialog-content,
+  .analysis-content {
+    width: 100%;
+    padding: 22px 18px;
+  }
+
+  .analysis-heading {
+    align-items: flex-start;
+    flex-direction: column;
+    padding-right: 42px;
+  }
+
+  .analysis-grade {
+    align-self: flex-start;
+  }
+
+  .analysis-grid {
+    grid-template-columns: 1fr;
+    width: 100%;
+  }
+
+  .analysis-card {
+    width: 100%;
+    padding: 16px;
+  }
+
+  .dialog-actions {
+    flex-direction: column-reverse;
+  }
+
+  .dialog-actions button,
+  .dialog-footer button {
+    width: 100%;
+  }
+
+  .dialog-footer {
+    justify-content: stretch;
+  }
+}
+
+/* =========================================
+   МАЛЕНЬКИЙ ТЕЛЕФОН
+   ========================================= */
+
+@media (max-width: 430px) {
+  .site-header h1 {
+    font-size: 1.42rem;
+  }
+
+  .app-layout {
+    width: 100%;
+    padding: 10px;
+  }
+
+  .form-panel,
+  .history-panel,
+  .current-workout-panel,
+  .stats-panel,
+  .court-panel {
+    padding: 14px;
+  }
+
+  .workout-actions,
+  .shot-selector {
+    grid-template-columns: 1fr;
+  }
+
+  .stats-grid {
+    gap: 8px;
+  }
+
+  .stat-card {
+    padding: 11px;
+  }
+
+  .stat-card span {
+    font-size: 0.7rem;
+  }
+
+  .stat-card strong {
+    font-size: 1.2rem;
+  }
+
+  .legend {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .court-lock {
+    inset: 7px;
+    padding: 15px;
+    text-align: center;
+  }
+}
+
+/* =========================================
+   ТЕЛЕФОН / ПЛАНШЕТ ГОРИЗОНТАЛЬНО
+   ========================================= */
+
+@media (
+  orientation: landscape
+) and (min-width: 700px) and (max-width: 1180px) {
+  .site-header {
+    flex-direction: row;
+    align-items: center;
+    padding: 16px 22px;
+  }
+
+  .app-layout {
+    display: grid;
+    grid-template-columns:
+      minmax(240px, 0.72fr)
+      minmax(0, 1.6fr);
+    align-items: start;
+    width: 100%;
+    max-width: 1180px;
+    gap: 16px;
+    padding: 16px;
+  }
+
+  .sidebar {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+  }
+
+  .sidebar > .panel {
+    width: 100%;
+    max-width: none;
+  }
+
+  .workspace {
+    width: 100%;
+    min-width: 0;
+    align-items: stretch;
+  }
+
+  .current-workout-panel {
+    width: 100%;
+  }
+
+  .content-grid {
+    display: block;
+    width: 100%;
+  }
+
+  .court-panel {
+    width: 100%;
+  }
+
+  .statistics-column {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: stretch;
+    width: 100%;
+    margin-top: 16px;
+  }
+
+  .statistics-column > .stats-panel {
+    width: 100%;
+    max-width: none;
+    height: 100%;
+  }
+
+  .statistics-column > .stats-panel:last-child {
+    grid-column: 1 / -1;
+  }
+
+  .basketball-court {
+    width: min(100%, 610px);
+  }
+}
+
+/* Низкий экран телефона в горизонтальном режиме */
+
+@media (
+  orientation: landscape
+) and (max-height: 520px) {
+  .site-header {
+    padding-top: 12px;
+    padding-bottom: 12px;
+  }
+
+  .app-dialog,
+  .analysis-dialog {
+    width: calc(100% - 16px);
+    max-height: calc(100dvh - 12px);
+  }
+
+  .dialog-content,
+  .analysis-content {
+    padding-top: 18px;
+    padding-bottom: 18px;
+  }
+}
