@@ -16,8 +16,8 @@
     href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;600;700&display=swap"
     rel="stylesheet"
   >
-  <link rel="stylesheet" href="./styles.css?v=13">
-  <script src="./app.js?v=11" defer></script>
+  <link rel="stylesheet" href="./styles.css?v=15">
+  <script src="./app.js?v=15" defer></script>
 </head>
 
 <body>
@@ -334,27 +334,32 @@
 
         <aside class="statistics-column">
           <section class="panel stats-panel">
-            <h2>Статистика тренировки</h2>
+            <div class="scoreboard-heading">
+              <h2>Точность</h2>
+              <span id="current-streak" class="streak-badge">Серия: —</span>
+            </div>
+
+            <div class="scoreboard-value">
+              <strong id="field-goal-percent">—</strong>
+              <span>FG%</span>
+            </div>
+
+            <div id="recent-shots" class="recent-shots" aria-label="Последние десять бросков"></div>
 
             <div class="stats-grid">
               <article class="stat-card">
                 <span>Броски</span>
-                <strong id="total-shots">0</strong>
+                <strong id="total-shots">—</strong>
               </article>
 
               <article class="stat-card">
                 <span>Попадания</span>
-                <strong id="made-shots">0</strong>
+                <strong id="made-shots">—</strong>
               </article>
 
               <article class="stat-card">
                 <span>Промахи</span>
-                <strong id="missed-shots">0</strong>
-              </article>
-
-              <article class="stat-card accent">
-                <span>FG%</span>
-                <strong id="field-goal-percent">0.0%</strong>
+                <strong id="missed-shots">—</strong>
               </article>
             </div>
           </section>

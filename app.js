@@ -106,6 +106,8 @@
       "made-shots",
       "missed-shots",
       "field-goal-percent",
+      "current-streak",
+      "recent-shots",
       "zone-stats",
       "all-total-shots",
       "all-made-shots",
@@ -507,12 +509,37 @@
 
   function renderStatistics() {
     var stats = getWorkoutStats(state.activeWorkoutId);
+    var activeShots = getActiveShots();
+    var hasShots = stats.total > 0;
 
-    elements["total-shots"].textContent = stats.total;
-    elements["made-shots"].textContent = stats.made;
-    elements["missed-shots"].textContent = stats.missed;
+    elements["total-shots"].textContent = hasShots ? stats.total : "—";
+    elements["made-shots"].textContent = hasShots ? stats.made : "—";
+    elements["missed-shots"].textContent = hasShots ? stats.missed : "—";
     elements["field-goal-percent"].textContent =
-      stats.percent.toFixed(1) + "%";
+      hasShots ? stats.percent.toFixed(1) : "—";
+
+    var streak = 0;
+
+    for (var index = activeShots.length - 1; index >= 0; index -= 1) {
+      if (activeShots[index].result !== "made") {
+        break;
+      }
+
+      streak += 1;
+    }
+
+    elements["current-streak"].textContent =
+      "Серия: " + (hasShots ? streak : "—");
+
+    elements["recent-shots"].innerHTML = "";
+
+    activeShots.slice(-10).forEach(function (shot) {
+      var marker = document.createElement("i");
+
+      marker.className = "recent-shot " + shot.result;
+      marker.title = shot.result === "made" ? "Попадание" : "Промах";
+      elements["recent-shots"].appendChild(marker);
+    });
 
     var zoneContainer = elements["zone-stats"];
 

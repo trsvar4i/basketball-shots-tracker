@@ -938,18 +938,97 @@ button:active:not(:disabled) {
 
 /* Statistics */
 
+.scoreboard-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-bottom: 13px;
+  border-bottom: 1px solid var(--line);
+}
+
+.streak-badge {
+  padding: 6px 9px;
+  border: 1px solid rgba(138, 125, 240, .22);
+  border-radius: 9px;
+  color: #c4bdf6;
+  background: var(--surface-soft);
+  font-size: .72rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.scoreboard-value {
+  display: flex;
+  align-items: baseline;
+  gap: 9px;
+  padding: 18px 0 10px;
+}
+
+.scoreboard-value strong {
+  color: var(--text);
+  font-size: clamp(3.2rem, 5vw, 4.5rem);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  line-height: .9;
+  letter-spacing: -.055em;
+}
+
+.scoreboard-value span {
+  color: #a99ff4;
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.recent-shots {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 13px;
+  margin-bottom: 17px;
+}
+
+.recent-shot {
+  display: block;
+  width: 10px;
+  height: 10px;
+  flex: 0 0 auto;
+}
+
+.recent-shot.made {
+  border-radius: 50%;
+  background: var(--success);
+}
+
+.recent-shot.missed {
+  background: var(--danger);
+  transform: rotate(45deg) scale(.82);
+}
+
 .stats-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 11px;
-  margin-top: 17px;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0;
+  margin-top: 0;
+  padding-top: 13px;
+  border-top: 1px solid var(--line);
 }
 
 .stat-card {
-  padding: 14px;
-  border-radius: var(--radius-md);
-  background: var(--surface-soft);
-  box-shadow: var(--shadow-inset);
+  padding: 0 10px;
+  border-right: 1px solid var(--line);
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.stat-card:first-child {
+  padding-left: 0;
+}
+
+.stat-card:last-child {
+  padding-right: 0;
+  border-right: 0;
 }
 
 .stat-card span,
@@ -964,15 +1043,11 @@ button:active:not(:disabled) {
 
 .stat-card strong {
   margin-top: 6px;
-  font-size: 1.38rem;
+  font-size: 1.55rem;
   font-weight: 600;
+  font-variant-numeric: tabular-nums;
 }
 
-.stat-card.accent {
-  background: #1b2140;
-}
-
-.stat-card.accent strong,
 .overall-row strong {
   color: #b9b2ef;
 }
