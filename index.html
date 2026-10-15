@@ -16,8 +16,8 @@
     href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;600;700&display=swap"
     rel="stylesheet"
   >
-  <link rel="stylesheet" href="./styles.css?v=8">
-  <script src="./app.js?v=7" defer></script>
+  <link rel="stylesheet" href="./styles.css?v=9">
+  <script src="./app.js?v=9" defer></script>
 </head>
 
 <body>
@@ -96,6 +96,14 @@
           </fieldset>
 
           <div id="program-fields" class="program-fields" hidden>
+            <div class="program-window-heading">
+              <span>
+                <i aria-hidden="true"></i>
+                Настройка программы
+              </span>
+              <small>готовый план</small>
+            </div>
+
             <label for="program-type">Программа тренировки</label>
             <select id="program-type">
               <option value="free-throws">Штрафные: стабильность</option>
@@ -177,44 +185,16 @@
         </div>
       </section>
 
-      <section class="panel drill-panel">
+      <section id="guided-progress-panel" class="panel drill-panel guided-progress-panel" hidden>
         <div class="section-heading">
           <div>
-            <p class="eyebrow">Упражнение</p>
-            <h2>Серии бросков</h2>
+            <p class="eyebrow">Готовая программа</p>
+            <h2 id="active-program-title">Прогресс упражнения</h2>
           </div>
 
           <span id="drill-status" class="status-badge">
-            Не запущено
+            Выполняется
           </span>
-        </div>
-
-        <div class="drill-controls">
-          <div>
-            <label for="drill-type">Упражнение</label>
-            <select id="drill-type">
-              <option value="free-throws">Штрафные броски</option>
-              <option value="mikan">Mikan Drill</option>
-              <option value="midrange">Средняя дистанция</option>
-              <option value="three-points">Трёхочковые</option>
-              <option value="five-spots">Пять точек</option>
-            </select>
-          </div>
-
-          <div>
-            <label for="drill-sets">Серии</label>
-            <input id="drill-sets" type="number" min="1" max="20" value="5">
-          </div>
-
-          <div>
-            <label for="drill-shots">Бросков в серии</label>
-            <input id="drill-shots" type="number" min="1" max="100" value="5">
-          </div>
-
-          <button id="start-drill-button" class="primary-button" type="button">
-            <span aria-hidden="true">▶</span>
-            Начать упражнение
-          </button>
         </div>
 
         <div id="drill-progress-block" class="drill-progress-block" hidden>

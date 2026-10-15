@@ -299,19 +299,6 @@ textarea {
   color: var(--cyan);
 }
 
-.drill-controls {
-  display: grid;
-  grid-template-columns: minmax(180px, 1fr) 110px 150px auto;
-  align-items: end;
-  gap: 12px;
-  margin-top: 18px;
-}
-
-.drill-controls input,
-.drill-controls select {
-  margin: 0;
-}
-
 .drill-progress-block {
   margin-top: 18px;
   padding: 15px;
@@ -814,12 +801,10 @@ textarea {
     flex-direction: column;
   }
 
-  .drill-controls,
   .compare-selectors {
     grid-template-columns: 1fr 1fr;
   }
 
-  .drill-controls > div:first-child,
   .compare-selectors > div,
   .compare-selectors button {
     grid-column: 1 / -1;
@@ -877,13 +862,8 @@ textarea {
 
   .workout-actions,
   .shot-selector,
-  .header-actions,
-  .drill-controls {
+  .header-actions {
     grid-template-columns: 1fr;
-  }
-
-  .drill-controls > * {
-    grid-column: 1;
   }
 }
 /* Точное центрирование крестика в модальных окнах */
@@ -1053,8 +1033,7 @@ body::before {
 }
 
 .icon-button span,
-.create-workout-button > span:first-child,
-#start-drill-button > span:first-child {
+.create-workout-button > span:first-child {
   color: var(--cyan);
   font-size: 1.05em;
 }
@@ -1187,8 +1166,7 @@ button:active:not(:disabled) {
   background: rgba(29, 42, 83, .92);
 }
 
-.create-workout-button,
-#start-drill-button {
+.create-workout-button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -1200,8 +1178,7 @@ button:active:not(:disabled) {
   min-height: 48px;
 }
 
-.create-workout-button > span:first-child,
-#start-drill-button > span:first-child {
+.create-workout-button > span:first-child {
   color: white;
 }
 
@@ -1301,16 +1278,56 @@ button:active:not(:disabled) {
 }
 
 .program-fields {
+  position: relative;
   margin-bottom: 17px;
-  padding: 14px;
+  padding: 0 14px 14px;
+  overflow: hidden;
   border: 1px solid rgba(139, 92, 246, .32);
   border-radius: 15px;
-  background: rgba(91, 33, 182, .08);
-  animation: revealProgram 280ms ease both;
+  background:
+    radial-gradient(circle at 100% 0%, rgba(66, 199, 255, .09), transparent 42%),
+    rgba(91, 33, 182, .09);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .05), 0 14px 30px rgba(0, 0, 0, .14);
+  animation: revealProgram 340ms cubic-bezier(.2, .8, .2, 1) both;
 }
 
 .program-fields[hidden] {
   display: none;
+}
+
+.program-window-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin: 0 -14px 14px;
+  padding: 10px 13px;
+  border-bottom: 1px solid rgba(139, 92, 246, .22);
+  color: #dcd5ff;
+  background: rgba(7, 12, 33, .58);
+  font-size: .68rem;
+  font-weight: 700;
+  letter-spacing: .02em;
+}
+
+.program-window-heading span {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.program-window-heading i {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--cyan);
+  box-shadow: 0 0 10px rgba(66, 199, 255, .8);
+}
+
+.program-window-heading small {
+  color: var(--muted);
+  font-size: .62rem;
+  font-weight: 500;
 }
 
 .program-fields select {
@@ -1335,6 +1352,19 @@ button:active:not(:disabled) {
   color: var(--muted);
   font-size: .7rem;
   line-height: 1.5;
+}
+
+.guided-progress-panel:not([hidden]) {
+  display: block;
+  border-color: rgba(139, 92, 246, .5);
+  background:
+    radial-gradient(circle at 100% 0%, rgba(66, 199, 255, .1), transparent 35%),
+    linear-gradient(145deg, rgba(29, 37, 82, .92), rgba(10, 17, 39, .96));
+  animation: guidedPanelIn 420ms cubic-bezier(.2, .8, .2, 1) both;
+}
+
+.guided-progress-panel .drill-progress-block {
+  margin-top: 16px;
 }
 
 .workout-item {
@@ -1429,7 +1459,12 @@ button:active:not(:disabled) {
 }
 
 @keyframes revealProgram {
-  from { opacity: 0; transform: translateY(-6px); }
+  from { opacity: 0; transform: translateY(-10px) scale(.985); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes guidedPanelIn {
+  from { opacity: 0; transform: translateY(-12px); }
   to { opacity: 1; transform: translateY(0); }
 }
 

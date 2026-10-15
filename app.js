@@ -110,10 +110,8 @@
       "all-total-shots",
       "all-made-shots",
       "all-field-goal-percent",
-      "drill-type",
-      "drill-sets",
-      "drill-shots",
-      "start-drill-button",
+      "guided-progress-panel",
+      "active-program-title",
       "drill-status",
       "drill-progress-block",
       "active-drill-name",
@@ -254,6 +252,15 @@
 
     if (isGuided && shouldUpdateTitle) {
       elements["workout-title"].value = program.title;
+    } else if (!isGuided && shouldUpdateTitle) {
+      var generatedTitle = Object.keys(TRAINING_PROGRAMS).some(function (key) {
+        return elements["workout-title"].value ===
+          TRAINING_PROGRAMS[key].title;
+      });
+
+      if (generatedTitle) {
+        elements["workout-title"].value = "";
+      }
     }
   }
 
@@ -454,7 +461,6 @@
       elements["delete-workout-button"].disabled = true;
       elements["undo-shot-button"].disabled = true;
       elements["court-lock"].hidden = true;
-      elements["start-drill-button"].disabled = true;
       return;
     }
 
@@ -480,8 +486,6 @@
       Boolean(workout.finishedAt) || !shots.length;
 
     elements["court-lock"].hidden = !workout.finishedAt;
-    elements["start-drill-button"].disabled = Boolean(workout.finishedAt);
-
     elements.resultButtons.forEach(function (button) {
       button.disabled = Boolean(workout.finishedAt);
     });
@@ -585,10 +589,11 @@
   function renderDrill() {
     var drill = getActiveDrill();
     var block = elements["drill-progress-block"];
+    var panel = elements["guided-progress-panel"];
 
     if (!drill || drill.workoutId !== state.activeWorkoutId) {
+      panel.hidden = true;
       block.hidden = true;
-      elements["drill-status"].textContent = "Не запущено";
       return;
     }
 
@@ -596,7 +601,9 @@
     var target = drill.sets * drill.shotsPerSet;
     var progress = Math.min(100, shots.length / target * 100);
 
+    panel.hidden = false;
     block.hidden = false;
+    elements["active-program-title"].textContent = drill.name;
     elements["active-drill-name"].textContent = drill.name;
     elements["drill-progress-fill"].style.width = progress + "%";
 
@@ -922,46 +929,6 @@
       ": " + classifyShot(x, y).label,
       "success"
     );
-  }
-
-  function startDrill() {
-    var workout = getActiveWorkout();
-
-    if (!workout || workout.finishedAt) {
-      return;
-    }
-
-    var type = elements["drill-type"].value;
-    var sets = Number(elements["drill-sets"].value);
-    var shotsPerSet = Number(elements["drill-shots"].value);
-
-    if (sets < 1 || shotsPerSet < 1) {
-      return;
-    }
-
-    var oldDrill = getActiveDrill();
-
-    if (oldDrill && !oldDrill.finishedAt) {
-      oldDrill.finishedAt = new Date().toISOString();
-    }
-
-    var drill = {
-      id: createId(),
-      workoutId: workout.id,
-      type: type,
-      name: DRILL_NAMES[type],
-      sets: sets,
-      shotsPerSet: shotsPerSet,
-      createdAt: new Date().toISOString(),
-      finishedAt: null
-    };
-
-    state.drills.push(drill);
-    state.activeDrillId = drill.id;
-
-    saveData();
-    renderAll();
-    showToast("Упражнение «" + drill.name + "» запущено");
   }
 
   function undoShot() {
@@ -1332,7 +1299,6 @@
       updateProgramPreview(true);
     });
     elements["basketball-court"].addEventListener("click", handleCourtClick);
-    elements["start-drill-button"].addEventListener("click", startDrill);
     elements["undo-shot-button"].addEventListener("click", undoShot);
 
     elements["finish-workout-button"].addEventListener("click", function () {
