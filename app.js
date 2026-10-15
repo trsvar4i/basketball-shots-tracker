@@ -13,6 +13,44 @@
     "five-spots": "Пять точек"
   };
 
+  var TRAINING_PROGRAMS = {
+    "free-throws": {
+      title: "Штрафные: стабильность",
+      description: "Спокойная работа над одинаковой механикой и ритмом каждого штрафного.",
+      sets: 5,
+      shotsPerSet: 10,
+      focus: "50 бросков · фиксируйте рутину перед каждым броском"
+    },
+    "mikan": {
+      title: "Mikan Drill",
+      description: "Попеременные завершения справа и слева для уверенной игры под кольцом.",
+      sets: 3,
+      shotsPerSet: 20,
+      focus: "60 бросков · меняйте руку после каждого завершения"
+    },
+    "midrange": {
+      title: "Средняя дистанция: пять точек",
+      description: "Серии с левого угла, крыла, центра, правого крыла и правого угла.",
+      sets: 5,
+      shotsPerSet: 10,
+      focus: "50 бросков · одна серия с каждой позиции"
+    },
+    "three-points": {
+      title: "Трёхочковые по периметру",
+      description: "Работа над дальним броском с обеих сторон площадки и из центра.",
+      sets: 5,
+      shotsPerSet: 10,
+      focus: "50 бросков · сохраняйте игровой темп"
+    },
+    "five-spots": {
+      title: "Пять точек: игровой темп",
+      description: "Короткие серии с пяти основных позиций с быстрым переходом между ними.",
+      sets: 5,
+      shotsPerSet: 5,
+      focus: "25 бросков · отмечайте каждую попытку сразу"
+    }
+  };
+
   var SIDE_LABELS = {
     left: "Слева",
     center: "По центру",
@@ -48,6 +86,10 @@
       "workout-title",
       "workout-date",
       "workout-notes",
+      "program-fields",
+      "program-type",
+      "program-preview",
+      "create-button-text",
       "form-message",
       "workout-list",
       "workout-count",
@@ -107,12 +149,19 @@
       "compare-second",
       "run-comparison",
       "compare-message",
-      "comparison-result"
+      "comparison-result",
+      "app-toast",
+      "toast-icon",
+      "toast-text"
     ].forEach(function (id) {
       elements[id] = byId(id);
     });
 
     elements.resultButtons = document.querySelectorAll(".result-button");
+    elements.modeInputs = document.querySelectorAll(
+      'input[name="workout-mode"]'
+    );
+    elements.modeCards = document.querySelectorAll(".mode-card");
   }
 
   function createId() {
@@ -151,6 +200,61 @@
   function showMessage(element, text, type) {
     element.textContent = text;
     element.className = "message" + (type ? " " + type : "");
+  }
+
+  var toastTimer = null;
+
+  function showToast(text, type) {
+    window.clearTimeout(toastTimer);
+    elements["toast-text"].textContent = text;
+    elements["toast-icon"].textContent = type === "error" ? "!" : "✓";
+    elements["app-toast"].className =
+      "app-toast is-visible" + (type === "error" ? " error" : "");
+    elements["app-toast"].hidden = false;
+
+    toastTimer = window.setTimeout(function () {
+      elements["app-toast"].classList.remove("is-visible");
+
+      window.setTimeout(function () {
+        elements["app-toast"].hidden = true;
+      }, 240);
+    }, 2800);
+  }
+
+  function getSelectedWorkoutMode() {
+    var selected = document.querySelector(
+      'input[name="workout-mode"]:checked'
+    );
+
+    return selected ? selected.value : "free";
+  }
+
+  function updateProgramPreview(shouldUpdateTitle) {
+    var mode = getSelectedWorkoutMode();
+    var isGuided = mode === "guided";
+    var program = TRAINING_PROGRAMS[elements["program-type"].value];
+
+    elements["program-fields"].hidden = !isGuided;
+    elements["create-button-text"].textContent = isGuided
+      ? "Запустить готовую программу"
+      : "Начать свободную тренировку";
+
+    elements.modeCards.forEach(function (card) {
+      var input = card.querySelector("input");
+      card.classList.toggle("active", input.checked);
+    });
+
+    if (!program) {
+      return;
+    }
+
+    elements["program-preview"].innerHTML =
+      "<strong>" + program.focus + "</strong>" +
+      "<span>" + program.description + "</span>";
+
+    if (isGuided && shouldUpdateTitle) {
+      elements["workout-title"].value = program.title;
+    }
   }
 
   function getWorkout(id) {
@@ -320,12 +424,15 @@
 
       button.addEventListener("click", function () {
         state.activeWorkoutId = workout.id;
+        var workoutDrills = state.drills.filter(function (drill) {
+          return drill.workoutId === workout.id;
+        }).sort(function (a, b) {
+          return b.createdAt.localeCompare(a.createdAt);
+        });
 
-        var activeDrill = getActiveDrill();
-
-        if (!activeDrill || activeDrill.workoutId !== workout.id) {
-          state.activeDrillId = null;
-        }
+        state.activeDrillId = workoutDrills.length
+          ? workoutDrills[0].id
+          : null;
 
         saveData();
         renderAll();
@@ -355,6 +462,7 @@
 
     elements["current-meta"].textContent = [
       formatDate(workout.workoutDate),
+      workout.mode === "guided" ? "Готовая программа" : "Свободная тренировка",
       workout.notes,
       workout.finishedAt ? "Тренировка завершена" : "Тренировка активна"
     ].filter(Boolean).join(" · ");
@@ -685,9 +793,17 @@
   function handleCreateWorkout(event) {
     event.preventDefault();
 
+    var mode = getSelectedWorkoutMode();
+    var programType = elements["program-type"].value;
+    var program = TRAINING_PROGRAMS[programType];
     var title = elements["workout-title"].value.trim();
     var date = elements["workout-date"].value;
     var notes = elements["workout-notes"].value.trim();
+
+    if (mode === "guided" && program) {
+      title = title || program.title;
+      notes = notes || program.description;
+    }
 
     if (!title || !date) {
       showMessage(
@@ -703,6 +819,8 @@
       title: title,
       workoutDate: date,
       notes: notes,
+      mode: mode,
+      programType: mode === "guided" ? programType : null,
       createdAt: new Date().toISOString(),
       finishedAt: null
     };
@@ -711,14 +829,39 @@
     state.activeWorkoutId = workout.id;
     state.activeDrillId = null;
 
+    if (mode === "guided" && program) {
+      var drill = {
+        id: createId(),
+        workoutId: workout.id,
+        type: programType,
+        name: DRILL_NAMES[programType],
+        sets: program.sets,
+        shotsPerSet: program.shotsPerSet,
+        createdAt: new Date().toISOString(),
+        finishedAt: null
+      };
+
+      state.drills.push(drill);
+      state.activeDrillId = drill.id;
+    }
+
     saveData();
     elements["workout-form"].reset();
     elements["workout-date"].value = getToday();
+    updateProgramPreview(false);
 
     showMessage(
       elements["form-message"],
-      "Тренировка создана.",
+      mode === "guided"
+        ? "Программа запущена — отмечайте броски на площадке."
+        : "Свободная тренировка создана.",
       "success"
+    );
+
+    showToast(
+      mode === "guided"
+        ? "Готовая программа запущена"
+        : "Свободная тренировка началась"
     );
 
     renderAll();
@@ -818,6 +961,7 @@
 
     saveData();
     renderAll();
+    showToast("Упражнение «" + drill.name + "» запущено");
   }
 
   function undoShot() {
@@ -1179,6 +1323,14 @@
 
   function connectEvents() {
     elements["workout-form"].addEventListener("submit", handleCreateWorkout);
+    elements.modeInputs.forEach(function (input) {
+      input.addEventListener("change", function () {
+        updateProgramPreview(true);
+      });
+    });
+    elements["program-type"].addEventListener("change", function () {
+      updateProgramPreview(true);
+    });
     elements["basketball-court"].addEventListener("click", handleCourtClick);
     elements["start-drill-button"].addEventListener("click", startDrill);
     elements["undo-shot-button"].addEventListener("click", undoShot);
@@ -1244,6 +1396,7 @@
     loadData();
 
     elements["workout-date"].value = getToday();
+    updateProgramPreview(false);
 
     if (!getWorkout(state.activeWorkoutId) && state.workouts.length) {
       state.activeWorkoutId =

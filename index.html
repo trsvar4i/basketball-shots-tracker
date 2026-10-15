@@ -10,52 +10,109 @@
 
   <title>Basketball Shot Chart</title>
 
-<link rel="stylesheet" href="./styles.css?v=6">
-<script src="./app.js?v=6" defer></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Nobile:ital,wght@0,400;0,500;0,700;1,400&display=swap"
+    rel="stylesheet"
+  >
+  <link rel="stylesheet" href="./styles.css?v=7">
+  <script src="./app.js?v=7" defer></script>
 </head>
 
 <body>
   <header class="site-header">
-    <div>
-      <p class="eyebrow">Локальный анализ тренировок</p>
-      <h1>Basketball Shot Chart</h1>
-    </div>
+    <div class="header-inner">
+      <div class="brand-block">
+        <div class="brand-mark" aria-hidden="true">●</div>
+        <div>
+          <p class="eyebrow">Локальный анализ тренировок</p>
+          <h1>Basketball Shot Chart</h1>
+        </div>
+      </div>
 
-    <div class="header-actions">
-      <button id="compare-button" class="secondary-button" type="button">
-        Сравнить
-      </button>
+      <div class="header-actions" aria-label="Работа с данными">
+        <button id="compare-button" class="secondary-button icon-button" type="button">
+          <span aria-hidden="true">⇄</span>
+          Сравнить тренировки
+        </button>
 
-      <button id="export-button" class="secondary-button" type="button">
-        Экспорт
-      </button>
+        <button id="export-button" class="secondary-button icon-button" type="button">
+          <span aria-hidden="true">↓</span>
+          Экспорт
+        </button>
 
-      <button id="import-button" class="secondary-button" type="button">
-        Импорт
-      </button>
+        <button id="import-button" class="secondary-button icon-button" type="button">
+          <span aria-hidden="true">↑</span>
+          Импорт
+        </button>
 
-      <input
-        id="import-file"
-        class="visually-hidden"
-        type="file"
-        accept=".json,application/json"
-      >
+        <input
+          id="import-file"
+          class="visually-hidden"
+          type="file"
+          accept=".json,application/json"
+          tabindex="-1"
+        >
+      </div>
     </div>
   </header>
 
   <main class="app-layout">
     <aside class="sidebar">
       <section class="panel form-panel">
-        <h2>Новая тренировка</h2>
+        <div class="section-heading form-heading">
+          <div>
+            <p class="eyebrow">Новый результат</p>
+            <h2>Начать тренировку</h2>
+          </div>
+          <span class="step-badge">1 шаг</span>
+        </div>
 
         <form id="workout-form">
-          <label for="workout-title">Название</label>
+          <fieldset class="mode-picker">
+            <legend>Выберите формат</legend>
+
+            <label class="mode-card active">
+              <input type="radio" name="workout-mode" value="free" checked>
+              <span class="mode-icon" aria-hidden="true">◎</span>
+              <span>
+                <strong>Свободная</strong>
+                <small>Отмечайте любые броски без ограничений</small>
+              </span>
+              <span class="mode-check" aria-hidden="true">✓</span>
+            </label>
+
+            <label class="mode-card">
+              <input type="radio" name="workout-mode" value="guided">
+              <span class="mode-icon" aria-hidden="true">✦</span>
+              <span>
+                <strong>Готовая программа</strong>
+                <small>Упражнение, серии и цель уже настроены</small>
+              </span>
+              <span class="mode-check" aria-hidden="true">✓</span>
+            </label>
+          </fieldset>
+
+          <div id="program-fields" class="program-fields" hidden>
+            <label for="program-type">Программа тренировки</label>
+            <select id="program-type">
+              <option value="free-throws">Штрафные: стабильность</option>
+              <option value="mikan">Mikan Drill: завершение под кольцом</option>
+              <option value="midrange">Средняя дистанция: пять точек</option>
+              <option value="three-points">Трёхочковые: по периметру</option>
+              <option value="five-spots">Пять точек: игровой темп</option>
+            </select>
+
+            <div id="program-preview" class="program-preview" aria-live="polite"></div>
+          </div>
+
+          <label for="workout-title">Название тренировки</label>
           <input
             id="workout-title"
             type="text"
             maxlength="80"
-            placeholder="Бросковая тренировка"
-            required
+            placeholder="Например, вечерняя бросковая"
           >
 
           <label for="workout-date">Дата</label>
@@ -69,8 +126,9 @@
             placeholder="Цель тренировки..."
           ></textarea>
 
-          <button class="primary-button" type="submit">
-            Создать тренировку
+          <button class="primary-button create-workout-button" type="submit">
+            <span aria-hidden="true">＋</span>
+            <span id="create-button-text">Начать свободную тренировку</span>
           </button>
         </form>
 
@@ -153,6 +211,7 @@
           </div>
 
           <button id="start-drill-button" class="primary-button" type="button">
+            <span aria-hidden="true">▶</span>
             Начать упражнение
           </button>
         </div>
@@ -364,6 +423,11 @@
       </section>
     </section>
   </main>
+
+  <div id="app-toast" class="app-toast" role="status" aria-live="polite" hidden>
+    <span id="toast-icon" class="toast-icon" aria-hidden="true">✓</span>
+    <span id="toast-text"></span>
+  </div>
 
   <dialog id="confirmation-dialog" class="app-dialog confirmation-dialog">
     <div class="dialog-content confirmation-content">
