@@ -549,8 +549,8 @@
       circle.setAttribute("cx", x);
       circle.setAttribute("cy", y);
       circle.setAttribute("r", "11");
-      circle.setAttribute("fill", "#38bdf8");
-      circle.setAttribute("stroke", "#e0f2fe");
+      circle.setAttribute("fill", "#65bca2");
+      circle.setAttribute("stroke", "#d5eee6");
       circle.setAttribute("stroke-width", "4");
       circle.setAttribute("filter", "url(#shot-glow)");
 
@@ -566,7 +566,7 @@
         line.setAttribute("y1", points[1]);
         line.setAttribute("x2", points[2]);
         line.setAttribute("y2", points[3]);
-        line.setAttribute("stroke", "#fb7185");
+        line.setAttribute("stroke", "#df7183");
         line.setAttribute("stroke-width", "7");
         line.setAttribute("stroke-linecap", "round");
         line.setAttribute("filter", "url(#shot-glow)");
@@ -702,11 +702,11 @@
       line.setAttribute("x2", width - right);
       line.setAttribute("y1", y);
       line.setAttribute("y2", y);
-      line.setAttribute("stroke", "rgba(156,169,207,.2)");
+      line.setAttribute("stroke", "rgba(152,163,186,.14)");
 
       label.setAttribute("x", left - 12);
       label.setAttribute("y", y + 5);
-      label.setAttribute("fill", "#9ca9cf");
+      label.setAttribute("fill", "#98a3ba");
       label.setAttribute("text-anchor", "end");
       label.textContent = value + "%";
 
@@ -727,11 +727,11 @@
       " L" + points[0].x + " " + (top + graphHeight) + " Z"
     );
 
-    area.setAttribute("fill", "rgba(139,92,246,.16)");
+    area.setAttribute("fill", "rgba(122,110,230,.10)");
 
     linePath.setAttribute("d", path);
     linePath.setAttribute("fill", "none");
-    linePath.setAttribute("stroke", "#8b5cf6");
+    linePath.setAttribute("stroke", "#7a6ee6");
     linePath.setAttribute("stroke-width", "5");
     linePath.setAttribute("stroke-linecap", "round");
     linePath.setAttribute("stroke-linejoin", "round");
@@ -747,8 +747,8 @@
       circle.setAttribute("cx", point.x);
       circle.setAttribute("cy", point.y);
       circle.setAttribute("r", "8");
-      circle.setAttribute("fill", "#38bdf8");
-      circle.setAttribute("stroke", "#e0f2fe");
+      circle.setAttribute("fill", "#65bca2");
+      circle.setAttribute("stroke", "#d5eee6");
       circle.setAttribute("stroke-width", "3");
 
       title.textContent =
@@ -760,14 +760,14 @@
 
       value.setAttribute("x", point.x);
       value.setAttribute("y", point.y - 16);
-      value.setAttribute("fill", "#f6f7ff");
+      value.setAttribute("fill", "#edf0f7");
       value.setAttribute("font-weight", "700");
       value.setAttribute("text-anchor", "middle");
       value.textContent = point.value.toFixed(1) + "%";
 
       date.setAttribute("x", point.x);
       date.setAttribute("y", height - 25);
-      date.setAttribute("fill", "#9ca9cf");
+      date.setAttribute("fill", "#98a3ba");
       date.setAttribute("font-size", "13");
       date.setAttribute("text-anchor", "middle");
       date.textContent = formatDate(point.workout.workoutDate);
