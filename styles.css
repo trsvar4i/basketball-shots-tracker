@@ -952,7 +952,7 @@ html {
 
 body {
   position: relative;
-  font-family: "Nobile", system-ui, sans-serif;
+  font-family: "Google Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
   background:
     radial-gradient(circle at 12% 8%, rgba(105, 62, 220, .25), transparent 29rem),
     radial-gradient(circle at 92% 14%, rgba(34, 116, 255, .18), transparent 32rem),
