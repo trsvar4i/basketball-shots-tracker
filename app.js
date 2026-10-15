@@ -195,9 +195,23 @@
     return total ? made / total * 100 : 0;
   }
 
-  function showMessage(element, text, type) {
+  function showMessage(element, text, type, duration) {
+    window.clearTimeout(element.messageHideTimer);
+    window.clearTimeout(element.messageClearTimer);
+
     element.textContent = text;
     element.className = "message" + (type ? " " + type : "");
+
+    if (duration) {
+      element.messageHideTimer = window.setTimeout(function () {
+        element.classList.add("is-hiding");
+
+        element.messageClearTimer = window.setTimeout(function () {
+          element.textContent = "";
+          element.className = "message";
+        }, 220);
+      }, duration);
+    }
   }
 
   var toastTimer = null;
@@ -862,7 +876,8 @@
       mode === "guided"
         ? "Программа запущена — отмечайте броски на площадке."
         : "Свободная тренировка создана.",
-      "success"
+      "success",
+      10000
     );
 
     showToast(

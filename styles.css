@@ -281,7 +281,6 @@ svg:focus-visible {
   color: var(--muted);
 }
 
-.step-badge,
 .counter,
 .status-badge,
 .analysis-grade {
@@ -368,6 +367,19 @@ select {
   color: var(--muted);
   font-size: .82rem;
   line-height: 1.45;
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 200ms ease, transform 200ms ease;
+}
+
+.message:empty {
+  min-height: 0;
+  margin-top: 0;
+}
+
+.message.is-hiding {
+  opacity: 0;
+  transform: translateY(-4px);
 }
 
 .message.success {
