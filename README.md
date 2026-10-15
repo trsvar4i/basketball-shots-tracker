@@ -8,8 +8,8 @@
 
 [Открыть приложение](https://trsvar4i.github.io/basketball-shots-tracker/) · [Посмотреть код](https://github.com/trsvar4i/basketball-shots-tracker)
 
-![HTML5](https://img.shields.io/badge/HTML5-структура-E34F26?style=flat-square&logo=html5&logoColor=white)
-![CSS3](https://img.shields.io/badge/CSS3-интерфейс-6633CC?style=flat-square&logo=css&logoColor=white)
+![HTML](https://img.shields.io/badge/HTML5-структура-E34F26?style=flat-square&logo=html5&logoColor=white)
+![CSS](https://img.shields.io/badge/CSS3-интерфейс-6633CC?style=flat-square&logo=css&logoColor=white)
 ![JavaScript](https://img.shields.io/badge/JavaScript-логика-F7DF1E?style=flat-square&logo=javascript&logoColor=111827)
 ![Storage](https://img.shields.io/badge/Storage-localStorage-38BDF8?style=flat-square)
 ![GitHub Pages](https://img.shields.io/badge/Deploy-GitHub_Pages-222222?style=flat-square&logo=github&logoColor=white)
@@ -254,8 +254,8 @@ basketball-shot-chart-2026-10-16.json
 
 | Технология | Назначение |
 |---|---|
-| **HTML5** | семантическая структура интерфейса и диалоговые окна |
-| **CSS3** | адаптивная сетка, состояния, анимации и оформление |
+| **HTML** | семантическая структура интерфейса и диалоговые окна |
+| **CSS** | адаптивная сетка, состояния, анимации и оформление |
 | **JavaScript** | логика тренировок, расчёты, импорт и экспорт |
 | **SVG** | интерактивная баскетбольная площадка и точки бросков |
 | **localStorage** | локальное хранение пользовательских данных |
