@@ -196,6 +196,12 @@ svg:focus-visible {
   flex-wrap: nowrap;
 }
 
+.mobile-menu-button,
+.mobile-navigation,
+.mobile-start-cta {
+  display: none;
+}
+
 /* Layout and surfaces */
 
 .app-layout {
@@ -1445,32 +1451,229 @@ button:active:not(:disabled) {
 }
 
 @media (max-width: 900px) {
+  body {
+    padding-bottom: calc(82px + env(safe-area-inset-bottom));
+  }
+
+  .site-header {
+    position: sticky;
+  }
+
+  .header-inner {
+    position: relative;
+    align-items: center;
+    flex-direction: row;
+    padding: 14px 18px;
+  }
+
+  .mobile-menu-button {
+    display: grid;
+    flex: 0 0 auto;
+    place-content: center;
+    gap: 4px;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    border: 1px solid rgba(138, 125, 240, .18);
+    border-radius: 14px;
+    color: var(--text);
+    background: var(--surface-raised);
+    box-shadow: var(--shadow-small);
+  }
+
+  .mobile-menu-button span {
+    display: block;
+    width: 18px;
+    height: 2px;
+    border-radius: 999px;
+    background: #b7b0ed;
+    transition: transform 180ms ease, opacity 180ms ease;
+  }
+
+  .mobile-menu-button[aria-expanded="true"] span:first-child {
+    transform: translateY(6px) rotate(45deg);
+  }
+
+  .mobile-menu-button[aria-expanded="true"] span:nth-child(2) {
+    opacity: 0;
+  }
+
+  .mobile-menu-button[aria-expanded="true"] span:last-child {
+    transform: translateY(-6px) rotate(-45deg);
+  }
+
+  .header-actions {
+    position: absolute;
+    top: calc(100% + 9px);
+    right: 14px;
+    left: 14px;
+    z-index: 80;
+    display: grid;
+    width: auto;
+    padding: 10px;
+    border: 1px solid rgba(138, 125, 240, .18);
+    border-radius: 18px;
+    background: rgba(21, 28, 47, .98);
+    box-shadow: 0 20px 50px rgba(2, 6, 15, .62);
+    opacity: 0;
+    transform: translateY(-8px) scale(.985);
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity 180ms ease, transform 180ms ease, visibility 180ms ease;
+  }
+
+  .header-actions.is-open {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    visibility: visible;
+    pointer-events: auto;
+  }
+
+  .header-actions .icon-button,
+  .header-actions .icon-button:first-child {
+    grid-column: auto;
+    width: 100%;
+    justify-content: flex-start;
+    box-shadow: none;
+  }
+
+  .app-layout {
+    display: block;
+    width: min(100%, 680px);
+    padding: 18px 16px 30px;
+  }
+
+  .sidebar,
+  .workspace,
+  .statistics-column {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .workspace,
+  .content-grid {
+    display: contents;
+  }
+
+  body[data-mobile-view="start"] .mobile-screen:not(.mobile-screen-start),
+  body[data-mobile-view="court"] .mobile-screen:not(.mobile-screen-court),
+  body[data-mobile-view="stats"] .mobile-screen:not(.mobile-screen-stats),
+  body[data-mobile-view="history"] .mobile-screen:not(.mobile-screen-history) {
+    display: none !important;
+  }
+
+  .mobile-screen {
+    margin-bottom: 16px;
+    animation: mobileScreenIn 260ms cubic-bezier(.22, .75, .25, 1) both;
+  }
+
+  .mobile-start-cta:not([hidden]) {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    margin-top: 16px;
+  }
+
+  .mobile-navigation {
+    position: fixed;
+    right: 10px;
+    bottom: calc(8px + env(safe-area-inset-bottom));
+    left: 10px;
+    z-index: 70;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    min-height: 66px;
+    padding: 7px;
+    border: 1px solid rgba(157, 171, 205, .12);
+    border-radius: 20px;
+    background: rgba(17, 24, 39, .94);
+    box-shadow: 0 14px 38px rgba(2, 6, 15, .64);
+    backdrop-filter: blur(18px);
+  }
+
+  .mobile-nav-button {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 3px;
+    min-width: 0;
+    padding: 6px 3px;
+    border: 0;
+    border-radius: 14px;
+    color: var(--muted);
+    background: transparent;
+    font-size: .69rem;
+    font-weight: 600;
+    transition: color 180ms ease, background-color 180ms ease, transform 180ms ease;
+  }
+
+  .mobile-nav-button svg {
+    width: 22px;
+    height: 22px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .mobile-nav-button.active {
+    color: #d8d4ff;
+    background: rgba(122, 110, 230, .2);
+  }
+
+  .mobile-nav-button.active::before {
+    position: absolute;
+    top: 2px;
+    width: 18px;
+    height: 2px;
+    border-radius: 999px;
+    background: var(--accent-strong);
+    content: "";
+  }
+
+  .mobile-nav-badge {
+    position: absolute;
+    top: 4px;
+    left: calc(50% + 8px);
+    display: grid;
+    min-width: 17px;
+    height: 17px;
+    padding: 0 4px;
+    place-items: center;
+    border: 2px solid #111827;
+    border-radius: 999px;
+    color: white;
+    background: var(--accent);
+    font-size: .58rem;
+    font-style: normal;
+    line-height: 1;
+  }
+
+  .app-toast {
+    bottom: calc(88px + env(safe-area-inset-bottom));
+  }
+
   .content-grid {
     grid-template-columns: 1fr;
   }
 
   .statistics-column {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    display: flex;
   }
 
   .statistics-column .stats-panel:last-child {
-    grid-column: 1 / -1;
+    grid-column: auto;
   }
 }
 
 @media (max-width: 760px) {
   .site-header {
-    position: relative;
-  }
-
-  .header-inner {
-    flex-direction: column;
-    padding: 17px 16px;
-  }
-
-  .header-actions {
-    width: 100%;
+    position: sticky;
   }
 
   .app-layout {
@@ -1497,6 +1700,18 @@ button:active:not(:disabled) {
     display: grid;
     grid-template-columns: 1fr 1fr;
     width: 100%;
+  }
+
+  .shot-selector {
+    position: sticky;
+    top: 78px;
+    z-index: 12;
+    padding: 8px;
+    border: 1px solid rgba(157, 171, 205, .1);
+    border-radius: 15px;
+    background: rgba(21, 28, 47, .94);
+    box-shadow: 0 10px 24px rgba(2, 6, 15, .38);
+    backdrop-filter: blur(14px);
   }
 
   .workout-actions button,
@@ -1588,5 +1803,16 @@ button:active:not(:disabled) {
     animation-duration: .01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: .01ms !important;
+  }
+}
+
+@keyframes mobileScreenIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }

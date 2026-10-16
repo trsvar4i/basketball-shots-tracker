@@ -16,8 +16,8 @@
     href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;600;700&display=swap"
     rel="stylesheet"
   >
-  <link rel="stylesheet" href="./styles.css?v=15">
-  <script src="./app.js?v=15" defer></script>
+  <link rel="stylesheet" href="./styles.css?v=16">
+  <script src="./app.js?v=16" defer></script>
 </head>
 
 <body>
@@ -38,7 +38,18 @@
         </div>
       </div>
 
-      <div class="header-actions" aria-label="Работа с данными">
+      <button
+        id="mobile-menu-button"
+        class="mobile-menu-button"
+        type="button"
+        aria-expanded="false"
+        aria-controls="header-actions"
+        aria-label="Открыть меню"
+      >
+        <span></span><span></span><span></span>
+      </button>
+
+      <div id="header-actions" class="header-actions" aria-label="Работа с данными">
         <button id="compare-button" class="secondary-button icon-button" type="button">
           <span aria-hidden="true">⇄</span>
           Сравнить тренировки
@@ -68,7 +79,7 @@
 
   <main class="app-layout">
     <aside class="sidebar">
-      <section class="panel form-panel">
+      <section class="panel form-panel mobile-screen mobile-screen-start">
         <div class="section-heading form-heading">
           <div>
             <p class="eyebrow">Новый результат</p>
@@ -150,7 +161,7 @@
         <p id="form-message" class="message" aria-live="polite"></p>
       </section>
 
-      <section class="panel history-panel">
+      <section class="panel history-panel mobile-screen mobile-screen-history">
         <div class="section-heading">
           <h2>История</h2>
           <span id="workout-count" class="counter">0</span>
@@ -161,13 +172,16 @@
     </aside>
 
     <section class="workspace">
-      <section class="panel current-panel">
+      <section class="panel current-panel mobile-screen mobile-screen-court">
         <div>
           <p class="eyebrow">Текущая тренировка</p>
           <h2 id="current-title">Выберите тренировку</h2>
           <p id="current-meta" class="muted">
             Создайте тренировку или откройте её из истории.
           </p>
+          <button id="mobile-start-cta" class="primary-button mobile-start-cta" type="button">
+            Создать тренировку
+          </button>
         </div>
 
         <div class="workout-actions">
@@ -191,7 +205,7 @@
         </div>
       </section>
 
-      <section id="guided-progress-panel" class="panel drill-panel guided-progress-panel" hidden>
+      <section id="guided-progress-panel" class="panel drill-panel guided-progress-panel mobile-screen mobile-screen-court" hidden>
         <div class="section-heading">
           <div>
             <p class="eyebrow">Готовая программа</p>
@@ -218,7 +232,7 @@
       </section>
 
       <div class="content-grid">
-        <section class="panel court-panel">
+        <section class="panel court-panel mobile-screen mobile-screen-court">
           <div class="court-header">
             <div>
               <h2>Карта бросков</h2>
@@ -332,7 +346,7 @@
           <p id="court-message" class="message" aria-live="polite"></p>
         </section>
 
-        <aside class="statistics-column">
+        <aside class="statistics-column mobile-screen mobile-screen-stats">
           <section class="panel stats-panel">
             <div class="scoreboard-heading">
               <h2>Точность</h2>
@@ -390,7 +404,7 @@
         </aside>
       </div>
 
-      <section class="panel chart-panel">
+      <section class="panel chart-panel mobile-screen mobile-screen-stats">
         <div class="section-heading">
           <div>
             <p class="eyebrow">Динамика</p>
@@ -415,6 +429,27 @@
       </section>
     </section>
   </main>
+
+  <nav class="mobile-navigation" aria-label="Основные разделы">
+    <button class="mobile-nav-button active" data-mobile-view="start" type="button">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>
+      <span>Начать</span>
+    </button>
+    <button class="mobile-nav-button" data-mobile-view="court" type="button">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h16v16H4zM8 4v5a4 4 0 0 0 8 0V4M9 15h6"></path></svg>
+      <span>Броски</span>
+      <i id="mobile-shot-count" class="mobile-nav-badge" hidden>0</i>
+    </button>
+    <button class="mobile-nav-button" data-mobile-view="stats" type="button">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19V9M12 19V5M19 19v-7"></path></svg>
+      <span>Статистика</span>
+    </button>
+    <button class="mobile-nav-button" data-mobile-view="history" type="button">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12a8 8 0 1 0 2.3-5.7L4 8.6M4 4v4.6h4.6M12 8v4l2.8 1.8"></path></svg>
+      <span>История</span>
+      <i id="mobile-history-count" class="mobile-nav-badge" hidden>0</i>
+    </button>
+  </nav>
 
   <div id="app-toast" class="app-toast" role="status" aria-live="polite" hidden>
     <span id="toast-icon" class="toast-icon" aria-hidden="true">✓</span>

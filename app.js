@@ -95,6 +95,7 @@
       "workout-count",
       "current-title",
       "current-meta",
+      "mobile-start-cta",
       "finish-workout-button",
       "delete-workout-button",
       "undo-shot-button",
@@ -128,6 +129,10 @@
       "import-button",
       "import-file",
       "compare-button",
+      "mobile-menu-button",
+      "header-actions",
+      "mobile-shot-count",
+      "mobile-history-count",
       "confirmation-dialog",
       "confirmation-icon",
       "confirmation-title",
@@ -162,6 +167,57 @@
       'input[name="workout-mode"]'
     );
     elements.modeCards = document.querySelectorAll(".mode-card");
+    elements.mobileNavButtons = document.querySelectorAll(
+      ".mobile-nav-button"
+    );
+  }
+
+  function isMobileLayout() {
+    return window.matchMedia("(max-width: 900px)").matches;
+  }
+
+  function closeMobileMenu() {
+    elements["header-actions"].classList.remove("is-open");
+    elements["mobile-menu-button"].setAttribute("aria-expanded", "false");
+    elements["mobile-menu-button"].setAttribute("aria-label", "Открыть меню");
+  }
+
+  function setMobileView(view, shouldScroll) {
+    var allowedViews = ["start", "court", "stats", "history"];
+
+    if (allowedViews.indexOf(view) === -1) {
+      view = "start";
+    }
+
+    document.body.dataset.mobileView = view;
+
+    elements.mobileNavButtons.forEach(function (button) {
+      var isActive = button.dataset.mobileView === view;
+
+      button.classList.toggle("active", isActive);
+
+      if (isActive) {
+        button.setAttribute("aria-current", "page");
+      } else {
+        button.removeAttribute("aria-current");
+      }
+    });
+
+    closeMobileMenu();
+
+    if (shouldScroll !== false && isMobileLayout()) {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  }
+
+  function updateMobileNavigation() {
+    var shots = getActiveShots().length;
+    var workouts = state.workouts.length;
+
+    elements["mobile-shot-count"].textContent = shots;
+    elements["mobile-shot-count"].hidden = shots === 0;
+    elements["mobile-history-count"].textContent = workouts;
+    elements["mobile-history-count"].hidden = workouts === 0;
   }
 
   function createId() {
@@ -459,6 +515,7 @@
 
         saveData();
         renderAll();
+        setMobileView("court");
       });
 
       list.appendChild(button);
@@ -477,8 +534,11 @@
       elements["delete-workout-button"].disabled = true;
       elements["undo-shot-button"].disabled = true;
       elements["court-lock"].hidden = true;
+      elements["mobile-start-cta"].hidden = false;
       return;
     }
+
+    elements["mobile-start-cta"].hidden = true;
 
     elements["current-title"].textContent = workout.title;
 
@@ -836,6 +896,7 @@
     renderShots();
     renderDrill();
     renderChart();
+    updateMobileNavigation();
   }
 
   function handleCreateWorkout(event) {
@@ -914,6 +975,7 @@
     );
 
     renderAll();
+    setMobileView("court");
   }
 
   function handleCourtClick(event) {
@@ -1388,6 +1450,41 @@
       this.value = "";
     });
 
+    elements["mobile-menu-button"].addEventListener("click", function () {
+      var isOpen = elements["header-actions"].classList.toggle("is-open");
+
+      this.setAttribute("aria-expanded", String(isOpen));
+      this.setAttribute(
+        "aria-label",
+        isOpen ? "Закрыть меню" : "Открыть меню"
+      );
+    });
+
+    elements.mobileNavButtons.forEach(function (button) {
+      button.addEventListener("click", function () {
+        setMobileView(button.dataset.mobileView);
+      });
+    });
+
+    elements["mobile-start-cta"].addEventListener("click", function () {
+      setMobileView("start");
+      window.setTimeout(function () {
+        elements["workout-title"].focus();
+      }, 280);
+    });
+
+    elements["header-actions"].addEventListener("click", function (event) {
+      if (event.target.closest("button")) {
+        closeMobileMenu();
+      }
+    });
+
+    document.addEventListener("click", function (event) {
+      if (!event.target.closest(".site-header")) {
+        closeMobileMenu();
+      }
+    });
+
     elements.resultButtons.forEach(function (button) {
       button.addEventListener("click", function () {
         state.selectedResult = button.dataset.result;
@@ -1402,6 +1499,7 @@
   function initialize() {
     findElements();
     loadData();
+    setMobileView("start", false);
 
     elements["workout-date"].value = getToday();
     updateProgramPreview(false);
